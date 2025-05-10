@@ -1,0 +1,30 @@
+name: Update Instagram Posts
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # Run daily at 12:00 UTC
+  workflow_dispatch:       # Also allows manual triggering
+
+jobs:
+  update-instagram:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm install axios sharp cheerio
+
+      - name: Run Instagram scraper
+        run: node .github/scripts/instagram-scraper.js
+        
+      - name: Commit and push if changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update Instagram posts [automated]"
+          file_pattern: "instagram-photos/*.* index.html instagram-posts.json"
