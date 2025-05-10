@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tay's Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <style>
+    /* global CSS variables (colors, etc) */
+    :root {
+      --primary-color: #ff9eba;
+      --secondary-color: #91c4fd;
+      --text-color: #333;
+      --accent-color: #ff6b9c;
+      --bg-color: #f9f9f9;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      --transition: all 0.3s ease;
+    }
+
+    /* reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      /* background with fallback gradient */
+      background: url('output-onlinepngtools.png'), linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      background-attachment: fixed; /* keeps background static on scroll */
+      color: var(--text-color);
+      line-height: 1.6;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* main container style */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* profile card container style */
+    .profile-container {
+      background-color: var(--card-bg);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden; /* important for border-radius */
+      margin: 40px auto;
+      backdrop-filter: blur(10px); /* frosted glass effect */
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0; /* padding handled by inner elements */
+    }
+
+    /* profile header and avatar style */
+    .profile-header {
+      position: relative;
+      height: 200px;
+      background: linear-gradient(to right, #ff758c, #86a8e7); /* gradient banner */
+      display: flex;
+      justify-content: center;
+    }
+
+    .avatar-container {
+      position: relative;
+      top: 120px; /* position avatar overlapping header */
+    }
+
+    .avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid white; /* white border around avatar */
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05); /* slight zoom on hover */
+    }
+
+    /* profile content area styles */
+    .profile-content {
+      margin-top: 100px; /* space for overlapping avatar */
+      padding: 20px 40px 40px;
+      text-align: center;
+    }
+
+    /* heading and tagline styles */
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      /* gradient text effect */
+      background: linear-gradient(to right, #ff758c, #86a8e7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+    }
+
+    .tag-line {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    /* social media links list */
+    .social-links {
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping on small screens */
+      justify-content: center;
+      gap: 15px;
+      list-style: none;
+      margin: 25px 0;
+    }
+
+    .social-links li a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 600;
+      padding: 10px 18px;
+      background-color: white;
+      border-radius: 50px; /* pill shape */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: var(--transition);
+    }
+
+    .social-links li a i {
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+
+    .social-links li a:hover {
+      transform: translateY(-5px); /* lift effect */
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+      background: linear-gradient(to right, #ff758c, #86a8e7); /* gradient on hover */
+      color: white;
+    }
+
+    /* icon colors for each platform (normal state) */
+    .instagram { color: #E1306C; }
+    .telegram { color: #0088cc; }
+    .github { color: #333; }
+
+    /* content sections (About, Gallery, etc) */
+    .section {
+      background-color: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 30px 0;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .section:hover {
+      transform: translateY(-5px); /* subtle lift on hover */
+    }
+
+    .section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-color);
+      display: inline-block; /* so border only underlines text */
+    }
+
+    /* specifics of about section */
+    .about-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .about-content p {
+      font-size: 1.1rem;
+    }
+
+    /* interest tags styling */
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .interest-tag {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .interest-tag:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* photo gallery section */
+    .gallery-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .gallery {
+      display: grid;
+      /* responsive grid layout */
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .photo {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      height: 250px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .photo:hover {
+      transform: translateY(-10px) scale(1.02); /* more pronounced lift */
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* ensure image covers area */
+      transition: var(--transition);
+    }
+
+    .photo:hover img {
+      transform: scale(1.1); /* zoom image on hover */
+    }
+
+    .photo-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent); /* gradient overlay */
+      padding: 20px;
+      color: white;
+      opacity: 0; /* hidden by default */
+      transition: var(--transition);
+    }
+
+    .photo:hover .photo-overlay {
+      opacity: 1; /* show overlay on hover */
+    }
+
+    /* footer section styles */
+    footer {
+      text-align: center;
+      padding: 30px 0;
+      background-color: var(--card-bg);
+      border-radius: 20px 20px 0 0; /* rounded top corners */
+      margin-top: 50px;
+    }
+
+    .contact-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Spotify widget container */
+    .spotify-section {
+      margin: 40px 0;
+    }
+
+    .spotify-widget {
+      border-radius: 16px;
+      overflow: hidden; /* clip to rounded corners */
+      box-shadow: var(--shadow);
+      margin: 0 auto;
+      max-width: 100%; /* responsive */
+    }
+
+    /* image modal styles */
+    .modal {
+      display: none; /* hidden by default */
+      position: fixed; /* sit on top */
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* disable scroll */
+      background-color: rgba(0, 0, 0, 0.9);
+      animation: fadeIn 0.3s; /* fade-in animation */
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); /* center */
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      transition: var(--transition);
+      z-index: 1001; /* above image */
+    }
+
+    .close:hover,
+    .close:focus {
+      color: var(--primary-color);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .download-btn {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    .download-btn:hover {
+      transform: translateX(-50%) translateY(-5px); /* lift effect */
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* scroll-to-top button */
+    .scroll-up {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+      opacity: 0; /* hidden */
+      visibility: hidden;
+      z-index: 100;
+    }
+
+    .scroll-up.active {
+      opacity: 1;
+      visibility: visible; /* show when active */
+    }
+
+    .scroll-up:hover {
+      background-color: var(--accent-color);
+      transform: translateY(-5px);
+    }
+
+    /* theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      z-index: 100;
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(45deg);
+    }
+
+    /* dark theme overrides */
+    body.dark-theme {
+      --text-color: #f1f1f1;
+      --bg-color: #121212;
+      --card-bg: rgba(30, 30, 30, 0.9);
+      background: url('output-onlinepngtools.png'), linear-gradient(135deg, #2b2b2b, #1a1a1a);
+    }
+
+    body.dark-theme .social-links li a {
+      background-color: #2d2d2d;
+      color: #f1f1f1;
+    }
+
+    body.dark-theme .theme-toggle {
+      background-color: #333;
+      color: #f1f1f1;
+    }
+
+    /* responsive layout changes */
+    @media (max-width: 768px) {
+      .profile-header {
+        height: 150px;
+      }
+
+      .avatar-container {
+        top: 90px; /* adjust avatar position */
+      }
+
+      .avatar {
+        width: 120px; /* smaller avatar */
+        height: 120px;
+      }
+
+      .profile-content {
+        margin-top: 70px; /* adjust content margin */
+        padding: 20px; /* less padding */
+      }
+
+      h1 {
+        font-size: 2rem; /* smaller heading */
+      }
+
+      .social-links {
+        flex-direction: column; /* stack vertically */
+        align-items: center;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+
+      .photo {
+        height: 200px; /* smaller photos */
+      }
+    }
+
+    /* animation helper classes */
+    .animate__fadeInUp {
+      animation-delay: 0.3s;
+    }
+
+    /* staggered fade-in effect for sections */
+    .staggered-fade-in > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .staggered-fade-in > *.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* page loader styles */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color); /* use theme bg */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden; /* hide completely when done */
+    }
+
+    .loader-spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(255, 155, 186, 0.3); /* lighter border */
+      border-radius: 50%;
+      border-top-color: var(--primary-color); /* spinner color */
+      animation: spin 1s ease-in-out infinite; /* rotation */
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: var(--text-color); /* use theme text color */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- loading screen (spinner until page ready) -->
+  <div class="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Loading Tay's world...</div>
+  </div>
+
+  <!-- theme toggle button (moon/sun) -->
+  <div class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon"></i> <!-- default icon is moon (for light theme) -->
+  </div>
+
+  <!-- main container: holds all content -->
+  <div class="container">
+    <!-- main profile card container -->
+    <div class="profile-container animate__animated animate__fadeIn">
+      
+      <!-- profile header section -->
+      <div class="profile-header">
+        <div class="avatar-container animate__animated animate__fadeInDown">
+          <img src="your-avatar.jpg" alt="Tay's Avatar" class="avatar">
+        </div>
+      </div>
+
+      <!-- profile content section -->
+      <div class="profile-content">
+        <h1 class="animate__animated animate__fadeInUp">Tay</h1>
+        <!-- tagline with dynamic age span -->
+        <p class="tag-line animate__animated animate__fadeInUp"><span id="age">18</span>-year-old Furry | Photographer | Developer</p>
+
+        <!-- social links list -->
+        <ul class="social-links staggered-fade-in">
+          <li><a href="https://www.instagram.com/taygoober/"><i class="fab fa-instagram instagram"></i> Instagram (Furry)</a></li>
+          <li><a href="https://www.instagram.com/tt7_deku/"><i class="fab fa-instagram instagram"></i> Instagram (Personal)</a></li>
+          <li><a href="https://t.me/taygoober"><i class="fab fa-telegram-plane telegram"></i> Telegram</a></li>
+          <li><a href="https://github.com/taygoober"><i class="fab fa-github github"></i> GitHub</a></li>
+        </ul>
+
+        <!-- about me section -->
+        <div class="section staggered-fade-in">
+          <h2>About Me</h2>
+          <div class="about-content">
+            <!-- about me paragraph with dynamic age -->
+            <p>Hey there! I'm an <span id="age-about">18</span>-year-old (Yes this auto updates, you can check for yourself on the 20th of November :3) furry from northern Germany with a passion for photography.</p>
+            <p>I love going outside, meeting new people and taking photos.</p>
+            <p>Some other interests I have are cameras themselves, cars and furries (duh).</p>
+            <p>But I also enjoy sports like hiking, tennis or cycling.</p>
+            <p>I am excited to hear from you.</p>
+            
+            <!-- interests tags (hobbies) -->
+            <div class="interests">
+              <span class="interest-tag"><i class="fas fa-camera"></i> Photography</span>
+              <span class="interest-tag"><i class="fas fa-car"></i> Cars</span>
+              <span class="interest-tag"><i class="fas fa-hiking"></i> Hiking</span>
+              <span class="interest-tag"><i class="fas fa-leaf"></i> Nature</span>
+              <span class="interest-tag"><i class="fas fa-code"></i> Coding</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spotify listening section -->
+        <div class="spotify-section staggered-fade-in">
+          <h2>Currently Listening To</h2>
+          <div class="spotify-widget">
+            <!-- embedded Spotify widget -->
+            <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+            <div class="elfsight-app-07718b9d-efa4-492e-95fd-7b81e3711f4d" data-elfsight-app-lazy></div>
+          </div>
+        </div>
+
+        <!-- photo gallery section -->
+        <div class="section staggered-fade-in">
+          <h2 class="gallery-title">Photo Gallery</h2>
+          <div class="gallery">
+            <!-- individual photo item -->
+            <div class="photo">
+              <img src="IMG_3554.webp" alt="Nature Photography">
+              <div class="photo-overlay">
+                <h3>Nature Shot</h3>
+              </div>
+            </div>
+            <!-- individual photo item -->
+            <div class="photo">
+              <img src="IMG_5483_polarr.webp" alt="Edited Photography">
+              <div class="photo-overlay">
+                <h3>Polarr Edit</h3>
+              </div>
+            </div>
+            <!-- individual photo item -->
+            <div class="photo">
+              <img src="IMG_3549.webp" alt="Landscape Photography">
+              <div class="photo-overlay">
+                <h3>Landscape</h3>
+              </div>
+            </div>
+            <!-- add more photos similarly -->
+          </div>
+        </div>
+      </div> <!-- end of profile content -->
+
+      <!-- footer section -->
+      <footer>
+        <p>© 2025 Tay • All rights reserved</p>
+        <a href="mailto:tay@furryfemboy.de" class="contact-link">
+          <i class="fas fa-envelope"></i> Contact Me
+        </a>
+      </footer>
+      
+    </div> <!-- end of profile container -->
+  </div> <!-- end of main container -->
+
+  <!-- scroll up button -->
+  <div class="scroll-up" id="scrollUp">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <!-- image modal popup -->
+  <div id="imageModal" class="modal">
+    <span class="close">&times;</span> <!-- modal close button -->
+    <img class="modal-content" id="modalImage"> <!-- modal image display -->
+    <a href="#" class="download-btn" id="downloadBtn" download>Download Image</a> <!-- download button -->
+  </div>
+
+  <script>
+    // loading screen logic
+    window.addEventListener('load', function() {
+      // wait a bit (smooth transition)
+      setTimeout(function() {
+        document.querySelector('.loader').classList.add('hidden');
+      }, 1000); // 1 second delay
+
+      // calculate age after page loads
+      calculateAndDisplayAge();
+    });
+
+    // staggered fade-in animation logic
+    const observerOptions = {
+      threshold: 0.1 // trigger when 10% is visible
+    };
+
+    // using intersection observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const elements = entry.target.children;
+          // add 'show' class to each child with delay
+          Array.from(elements).forEach((el, i) => {
+            setTimeout(() => {
+              el.classList.add('show');
+            }, i * 150); // 150ms delay per item
+          });
+          // stop observing this section
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // observe all sections with 'staggered-fade-in'
+    document.querySelectorAll('.staggered-fade-in').forEach(section => {
+      observer.observe(section);
+    });
+
+    // dark mode toggle logic
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    themeToggle.addEventListener('click', () => {
+      // toggle 'dark-theme' class on body
+      document.body.classList.toggle('dark-theme');
+      
+      // update icon (sun/moon) based on theme
+      if (document.body.classList.contains('dark-theme')) {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      } else {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      }
+      // maybe add localStorage to save theme
+    });
+
+    // scroll up button logic
+    const scrollUpButton = document.getElementById('scrollUp');
+    
+    // show/hide scroll-up button on scroll
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) { // show after scrolling 300px
+        scrollUpButton.classList.add('active');
+      } else {
+        scrollUpButton.classList.remove('active');
+      }
+    });
+    
+    // smooth scroll to top on click
+    scrollUpButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // smooth scroll
+      });
+    });
+
+    // image modal logic
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const closeBtn = document.querySelector('.close');
+    const photos = document.querySelectorAll('.photo img');
+
+    // add click event listener to each photo
+    photos.forEach(photo => {
+      photo.addEventListener('click', () => {
+        modal.style.display = 'block'; // show modal
+        modalImg.src = photo.src; // set modal image source to clicked photo
+        downloadBtn.href = photo.src; // set download link to clicked photo
+        // optional: set custom download filename
+        // downloadBtn.download = photo.alt || 'downloaded-image';
+      });
+    });
+
+    // close modal on X click
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none'; // hide modal
+    });
+
+    // close modal when clicking outside image
+    modal.addEventListener('click', (e) => {
+      // if clicked outside modal image, close modal
+      if (e.target === modal) {
+        modal.style.display = 'none'; // hide modal
+      }
+    });
+
+    // age calculation logic
+    function calculateAndDisplayAge() {
+      const birthDate = new Date(2005, 10, 20); // months are zero-based (0 = Jan)
+      const today = new Date();
+      
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDifference = today.getMonth() - birthDate.getMonth();
+      
+      // if birthday hasn't occurred yet this year
+      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      
+      // update age in tagline
+      const ageSpanTagline = document.getElementById('age');
+      if (ageSpanTagline) {
+        ageSpanTagline.textContent = age;
+      }
+
+      // update age in about section
+      const ageSpanAbout = document.getElementById('age-about');
+      if (ageSpanAbout) {
+        ageSpanAbout.textContent = age;
+      }
+    }
+
+    // initial call if page loads quickly
+    // moved inside load event for correct order
+    // calculateAndDisplayAge();
+  </script>
+
+  <!-- Microsoft Clarity analytics script -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "m13xe45v09");
+  </script>
+</body>
+
+</html>
