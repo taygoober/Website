@@ -44,7 +44,7 @@ function getLatestPhotos() {
   }
 }
 
-// Update the HTML file with the gallery
+// Update this part of the function
 function updateHtml(photos) {
   try {
     // Read the HTML file
@@ -57,14 +57,14 @@ function updateHtml(photos) {
       const displayName = prettyName.charAt(0).toUpperCase() + prettyName.slice(1);
       
       return `
-            <!-- Photo item -->
-            <div class="photo">
-              <img src="${photo.path}" alt="${displayName}">
-              <div class="photo-overlay">
-                <h3>Photo</h3>
-                <p>${displayName}</p>
-              </div>
-            </div>`;
+    <!-- Photo item -->
+    <div class="photo">
+      <img src="${photo.path}" alt="${displayName}">
+      <div class="photo-overlay">
+        <h3>Photo</h3>
+        <p>${displayName}</p>
+      </div>
+    </div>`;
     }).join('\n');
     
     // Find if there's already a BLUESKY PHOTOS section
@@ -72,20 +72,14 @@ function updateHtml(photos) {
       // Replace existing section
       html = html.replace(
         /<!-- BLUESKY PHOTOS START -->[\s\S]*?<!-- BLUESKY PHOTOS END -->/,
-        `<!-- BLUESKY PHOTOS START -->\n${photosHtml}\n            <!-- BLUESKY PHOTOS END -->`
+        `<!-- BLUESKY PHOTOS START -->\n${photosHtml}\n    <!-- BLUESKY PHOTOS END -->`
       );
     } else {
-      // Check if there's a gallery div to add to
-      if (html.includes('<div class="gallery">')) {
-        // Add at the beginning of the gallery
-        html = html.replace(
-          /<div class="gallery">/,
-          `<div class="gallery">\n            <!-- BLUESKY PHOTOS START -->\n${photosHtml}\n            <!-- BLUESKY PHOTOS END -->`
-        );
-      } else {
-        console.error("Could not find gallery div in HTML file");
-        return;
-      }
+      // Add new section after gallery div opening
+      html = html.replace(
+        /<div class="gallery">/,
+        `<div class="gallery">\n    <!-- BLUESKY PHOTOS START -->\n${photosHtml}\n    <!-- BLUESKY PHOTOS END -->`
+      );
     }
     
     // Write the updated HTML
