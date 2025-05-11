@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sample-1-1746967655181",
+    "caption": "Sample Instagram Post 1",
+    "imageUrl": "instagram-photos/instagram-sample-1-1746967655181.webp",
+    "permalink": "https://www.instagram.com/taygoober/",
+    "timestamp": "2025-05-11T12:47:35.181Z"
+  },
+  {
+    "id": "sample-2-1746967655181",
+    "caption": "Sample Instagram Post 2",
+    "imageUrl": "instagram-photos/instagram-sample-2-1746967655181.webp",
+    "permalink": "https://www.instagram.com/taygoober/",
+    "timestamp": "2025-05-11T12:47:35.181Z"
+  },
+  {
+    "id": "sample-3-1746967655181",
+    "caption": "Sample Instagram Post 3",
+    "imageUrl": "instagram-photos/instagram-sample-3-1746967655181.webp",
+    "permalink": "https://www.instagram.com/taygoober/",
+    "timestamp": "2025-05-11T12:47:35.181Z"
+  }
+]
