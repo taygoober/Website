@@ -540,6 +540,53 @@
       font-size: 1.2rem;
       color: var(--text-color); /* use theme text color */
     }
+
+    /* Gallery section divider */
+    .gallery-divider {
+      grid-column: 1 / -1; /* Span all columns */
+      text-align: center;
+      margin: 15px 0;
+      position: relative;
+    }
+    
+    .gallery-divider h3 {
+      display: inline-block;
+      background-color: var(--card-bg);
+      padding: 0 15px;
+      font-size: 1.3rem;
+      color: var(--text-color);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .gallery-divider:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      z-index: 0;
+    }
+    
+    /* Make Instagram posts have a special border */
+    .instagram-post {
+      position: relative;
+    }
+    
+    .instagram-post:after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png');
+      background-size: contain;
+      z-index: 2;
+      border-radius: 5px;
+    }
   </style>
 </head>
 
