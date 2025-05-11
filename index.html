@@ -230,6 +230,7 @@
       box-shadow: var(--shadow);
       cursor: pointer;
       transition: var(--transition);
+      background-color: #f0f0f0; /* fallback background */
     }
 
     .photo:hover {
@@ -241,11 +242,17 @@
       width: 100%;
       height: 100%;
       object-fit: cover; /* ensure image covers area */
-      transition: var(--transition);
+      transition: filter 0.5s ease, transform 0.3s ease;
+      filter: blur(20px); /* start blurred */
+      will-change: filter; /* optimize performance */
     }
 
-    .photo:hover img {
-      transform: scale(1.1); /* zoom image on hover */
+    .photo img.loaded {
+      filter: blur(0); /* remove blur when loaded */
+    }
+
+    body.dark-theme .photo {
+      background-color: #2a2a2a; /* darker fallback for dark theme */
     }
 
     .photo-overlay {
@@ -747,9 +754,7 @@
               <p class="gear-type">Camera Body</p>
               <div class="gear-details">
                 <p>Full-frame mirrorless camera with 26.2MP</p>
-                <p>Perfect for all my current needs</p>
-                <p>Good in low-light situations</p>
-                <p>Up to 4K (16:9) 3.840 x 2.160 (25, 23,98 B/s) Intra Frame</p>
+                <p>Perfect for both photography and video</p>
               </div>
             </div>
             
@@ -762,7 +767,7 @@
               <p class="gear-type">Telephoto Zoom Lens</p>
               <div class="gear-details">
                 <p>f/4.5-5.6 II USM</p>
-                <p>Great for portraits and great colours</p>
+                <p>Great for portraits and distant subjects</p>
               </div>
             </div>
             
@@ -786,7 +791,7 @@
               <p class="gear-type">Standard Zoom Lens</p>
               <div class="gear-details">
                 <p>f/4-7.1 IS STM</p>
-                <p>Native RF mount with excellent range and stabilization, my current allrounder</p>
+                <p>Native RF mount with excellent range and stabilization</p>
               </div>
             </div>
           </div>
@@ -801,27 +806,34 @@
             <div class="gallery-divider">
               <h3>Recent Work</h3>
             </div>
-    <!-- Photo item -->
+    <!-- Photo item with LQIP -->
     <div class="photo">
-      <img src="my-photos/IMG_0708.JPG" alt="IMG_0708">
+      <!-- Small blurry placeholder that will be replaced with high-res image -->
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAkI/8QAIRAAAAUDBAMAAAAAAAAAAAAAAQIDBAUGBxESEwAIFCEx/9oACAEBAAA/AK/bbdxmp8YWnGej4PI6kufpJVskqZRlnoZ5FaQ0c1fDKEDzyXOAFJRmUGZgWTKAA0Td/9k=" 
+           data-highres="my-photos/IMG_0708.JPG" 
+           alt="IMG_0708">
       <div class="photo-overlay">
         <h3>Photo</h3>
         <p>IMG_0708</p>
       </div>
     </div>
 
-    <!-- Photo item -->
+    <!-- Photo item with LQIP -->
     <div class="photo">
-      <img src="my-photos/IMG_0149.JPG" alt="IMG_0149">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAcI/8QAIRAAAAQEBwEAAAAAAAAAAAAAAQIDBAUGBxESEwAIFBUh/9oACAEBAAA/AK/bbduY6zxnpOOSOlnHqRK7K5PUzHMi0019CAzoRkKWgokwwEyzU4IS9gIACJsP/9k=" 
+           data-highres="my-photos/IMG_0149.JPG" 
+           alt="IMG_0149">
       <div class="photo-overlay">
         <h3>Photo</h3>
         <p>IMG_0149</p>
       </div>
     </div>
 
-    <!-- Photo item -->
+    <!-- Photo item with LQIP -->
     <div class="photo">
-      <img src="my-photos/IMG_0083_1.JPG" alt="IMG_0083_1">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAkI/8QAHhAAAgIBBQEAAAAAAAAAAAAAAQIDBgQFBwAREhMh/9oACAEBAAA/AK/ffea67wnpuKS3YqLpJRsuQS1aZLd59FfO0ExQGx94wAFlagVSZAQWVLgAJMf/2Q==" 
+           data-highres="my-photos/IMG_0083_1.JPG" 
+           alt="IMG_0083_1">
       <div class="photo-overlay">
         <h3>Photo</h3>
         <p>IMG_0083_1</p>
@@ -836,7 +848,9 @@
             
             <!-- individual photo item -->
             <div class="photo">
-              <img src="IMG_3554.webp" alt="Orion">
+              <img src="data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoKAAoAAUAmJaQAA3AA/vpAAP7mtJQn/zpl9cOW/4aXB4DT3KFIbaTZHjJtLdNOlqnJe5ibAAAA" 
+           data-highres="IMG_3554.webp" 
+           alt="Orion">
               <div class="photo-overlay">
                 <h3>Orion</h3>
               </div>
@@ -844,7 +858,9 @@
             
             <!-- individual photo item -->
             <div class="photo">
-              <img src="IMG_5483_polarr.webp" alt="Beasty BitezZ">
+              <img src="data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAACwAQCdASoKAAoAAUAmJaQAA3AA/vpAAP7mtJQn/zpl9cOW/4aXB4DT3KFIbaTZHjJtLdNOlqnJe5ibAAAA" 
+           data-highres="IMG_5483_polarr.webp" 
+           alt="Beasty BitezZ">
               <div class="photo-overlay">
                 <h3>Beasty BitezZ</h3>
               </div>
@@ -852,7 +868,9 @@
             
             <!-- individual photo item -->
             <div class="photo">
-              <img src="IMG_3549.webp" alt="Meabel">
+              <img src="data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAACwAQCdASoKAAoAAUAmJaQAA3AA/vpAAP7mtJQn/zpl9cOW/4aXB4DT3KFIbaTZHjJtLdNOlqnJe5ibAAAA" 
+           data-highres="IMG_3549.webp" 
+           alt="Meabel">
               <div class="photo-overlay">
                 <h3>Meabel</h3>
               </div>
@@ -972,10 +990,9 @@
     photos.forEach(photo => {
       photo.addEventListener('click', () => {
         modal.style.display = 'block'; // show modal
-        modalImg.src = photo.src; // set modal image source to clicked photo
-        downloadBtn.href = photo.src; // set download link to clicked photo
-        // optional: set custom download filename
-        // downloadBtn.download = photo.alt || 'downloaded-image';
+        // Use high-res source if available or fallback to current src
+        modalImg.src = photo.dataset.highres || photo.src;
+        downloadBtn.href = photo.dataset.highres || photo.src;
       });
     });
 
@@ -1018,9 +1035,62 @@
       }
     }
 
-    // initial call if page loads quickly
-    // moved inside load event for correct order
-    // calculateAndDisplayAge();
+    // Lazy loading with LQIP (Low Quality Image Placeholders)
+    document.addEventListener('DOMContentLoaded', function() {
+      const lazyImages = document.querySelectorAll('.photo img');
+      
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              
+              // Create a new image element to load the high-res version in the background
+              const highResImage = new Image();
+              
+              // When the high-res image is loaded, swap it in
+              highResImage.onload = function() {
+                img.src = this.src;
+                img.classList.add('loaded');
+              };
+              
+              // Start loading the high-res image
+              highResImage.src = img.dataset.highres || img.src;
+              
+              // Stop observing once we've handled this image
+              imageObserver.unobserve(img);
+            }
+          });
+        }, {
+          rootMargin: '200px', // Load images 200px before they enter the viewport
+          threshold: 0.1      // Trigger when 10% of the image is visible
+        });
+        
+        // Observe all images
+        lazyImages.forEach(img => {
+          imageObserver.observe(img);
+        });
+      } else {
+        // Fallback for browsers that don't support Intersection Observer
+        // Load all images immediately
+        lazyImages.forEach(img => {
+          if (img.dataset.highres) {
+            img.src = img.dataset.highres;
+          }
+          img.classList.add('loaded');
+        });
+      }
+    });
+
+    // Update image modal to use high-res images
+    photos.forEach(photo => {
+      photo.addEventListener('click', () => {
+        modal.style.display = 'block';
+        // Use high-res source if available or fallback to current src
+        modalImg.src = photo.dataset.highres || photo.src;
+        downloadBtn.href = photo.dataset.highres || photo.src;
+      });
+    });
   </script>
 
   <!-- Microsoft Clarity analytics script -->
