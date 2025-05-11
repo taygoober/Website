@@ -569,19 +569,53 @@
       background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
       z-index: 0;
     }
-    /* Bluesky feed styling */
+    
     .bluesky-container {
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      background-color: var(--card-bg);
-      transition: var(--transition);
       margin: 20px 0;
     }
     
-    .bluesky-container:hover {
+    .bluesky-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    
+    .bluesky-card {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .bluesky-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .bluesky-logo {
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+    
+    .bluesky-content {
+      flex-grow: 1;
+    }
+    
+    .bluesky-content h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.2rem;
+    }
+    
+    .bluesky-content p {
+      margin: 0;
+      opacity: 0.8;
+    }
+    
+    .bluesky-arrow {
+      margin-left: 15px;
     }
     
     .bluesky-section h2 {
@@ -590,11 +624,6 @@
       padding-bottom: 10px;
       border-bottom: 2px solid var(--primary-color);
       display: inline-block;
-    }
-    
-    /* Dark theme support for Bluesky embed */
-    body.dark-theme .bluesky-container iframe {
-      filter: invert(0.85) hue-rotate(180deg);
     }
   </style>
 </head>
@@ -668,16 +697,28 @@
             <div class="elfsight-app-07718b9d-efa4-492e-95fd-7b81e3711f4d" data-elfsight-app-lazy></div>
           </div>
         </div>
-        <!-- Bluesky photos section -->
         <div class="bluesky-section section staggered-fade-in">
-          <h2>My Latest Photos</h2>
+          <h2>Follow Me on Bluesky</h2>
           <div class="bluesky-container">
-            <iframe 
-              src="https://bsky.app/profile/taygoober.bsky.social/embed" 
-              style="width:100%; height:500px; border:none;" 
-              allow="web-share"
-              title="Tay's Bluesky Feed">
-            </iframe>
+            <a href="https://bsky.app/profile/taygoober.bsky.social" target="_blank" class="bluesky-link">
+              <div class="bluesky-card">
+                <div class="bluesky-logo">
+                  <svg width="40" height="40" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 18C0 8.05887 8.05887 0 18 0C27.9411 0 36 8.05887 36 18C36 27.9411 27.9411 36 18 36C8.05887 36 0 27.9411 0 18Z" fill="#0085FF"/>
+                    <path d="M26.6172 10.125H22.1016L18.9375 17.7891H18.8438L15.8906 10.125H11.1328L16.2422 21.9375L13.3594 28.875H17.875L26.6172 10.125Z" fill="white"/>
+                  </svg>
+                </div>
+                <div class="bluesky-content">
+                  <h3>@taygoober.bsky.social</h3>
+                  <p>Check out my latest photos and updates on Bluesky</p>
+                </div>
+                <div class="bluesky-arrow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
         <!-- photo gallery section -->
