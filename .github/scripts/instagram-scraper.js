@@ -229,7 +229,7 @@ function updateHtmlWithInstagramPosts(posts) {
     // Read the HTML file
     let html = fs.readFileSync(HTML_FILE, 'utf8');
     
-    // Create HTML for Instagram posts with click function to open on Instagram
+    // Create HTML for Instagram posts with Instagram class
     const instagramHtml = posts.map(post => {
       const caption = post.caption 
         ? post.caption.substring(0, 50) + (post.caption.length > 50 ? '...' : '') 
@@ -237,7 +237,7 @@ function updateHtmlWithInstagramPosts(posts) {
       
       return `
             <!-- Instagram photo item -->
-            <div class="photo" onclick="window.open('${post.permalink}', '_blank')">
+            <div class="photo instagram-post" onclick="window.open('${post.permalink}', '_blank')">
               <img src="${post.imageUrl}" alt="Instagram Post">
               <div class="photo-overlay">
                 <h3>Instagram</h3>
