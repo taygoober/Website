@@ -569,6 +569,33 @@
       background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
       z-index: 0;
     }
+    /* Bluesky feed styling */
+    .bluesky-container {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background-color: var(--card-bg);
+      transition: var(--transition);
+      margin: 20px 0;
+    }
+    
+    .bluesky-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .bluesky-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-color);
+      display: inline-block;
+    }
+    
+    /* Dark theme support for Bluesky embed */
+    body.dark-theme .bluesky-container iframe {
+      filter: invert(0.85) hue-rotate(180deg);
+    }
   </style>
 </head>
 
