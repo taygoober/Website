@@ -1,0 +1,32 @@
+name: Update Photo Gallery
+
+on:
+  push:
+    paths:
+      - 'my-photos/**'  # Run when photos are added or changed
+  workflow_dispatch:    # Allow manual runs
+
+jobs:
+  update-gallery:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: npm install fs path
+        
+      - name: Update gallery in HTML
+        run: node .github/scripts/update-gallery.js
+        
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update photo gallery [automated]"
+          file_pattern: "index.html"
