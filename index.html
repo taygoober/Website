@@ -9,6 +9,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
   <style>
+    /* Import Minecraft font */
+    @font-face {
+      font-family: 'Minecraft';
+      src: url('https://cdn.jsdelivr.net/gh/South-Paw/typeface-minecraft@master/font/minecraft.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/South-Paw/typeface-minecraft@master/font/minecraft.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    
     /* global CSS variables (colors, etc) */
     :root {
       --primary-color: #ff9eba;
@@ -747,6 +757,54 @@
         max-width: 100%;
       }
     }
+
+    /* MOTD Section Styles */
+    .motd-container {
+      margin: 30px 0;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .motd-text {
+      font-family: 'Minecraft', monospace;
+      color: #FFFF55; /* Minecraft yellow color */
+      font-size: 1.4rem;
+      line-height: 1.5;
+      text-shadow: 2px 2px 0 #3F3F00; /* Minecraft-style shadow */
+      display: inline-block;
+      padding: 10px 15px;
+      position: relative;
+      animation: motdPulse 2s infinite ease-in-out;
+    }
+
+    .motd-text::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      z-index: -1;
+    }
+
+    /* Dark theme override */
+    body.dark-theme .motd-text {
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    body.dark-theme .motd-text::before {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* MOTD Animation */
+    @keyframes motdPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
     
   </style>
 </head>
@@ -796,6 +854,11 @@
           <li><a href="https://t.me/taygoober"><i class="fab fa-telegram-plane telegram"></i> Telegram</a></li>
           <li><a href="https://github.com/taygoober"><i class="fab fa-github github"></i> GitHub</a></li>
         </ul>
+
+        <!-- MOTD Section -->
+        <div class="motd-container staggered-fade-in">
+          <div class="motd-text" id="motdText">Loading today's message...</div>
+        </div>
 
         <!-- about me section -->
         <div class="section staggered-fade-in">
@@ -1306,6 +1369,41 @@
               Couldn't load repository stats: ${error.message}
             </div>
           `;
+        });
+    });
+
+    // MOTD Loading and Display
+    document.addEventListener('DOMContentLoaded', function() {
+      const motdElement = document.getElementById('motdText');
+      
+      // This URL should point to your file with MOTDs that gets updated by GitHub Actions
+      const motdUrl = 'https://raw.githubusercontent.com/taygoober/Website/main/motd.json';
+      
+      // Fetch the MOTD data
+      fetch(motdUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to load MOTD');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (Array.isArray(data.messages) && data.messages.length > 0) {
+            // If there's a selected message of the day in the JSON
+            if (data.selectedMessage) {
+              motdElement.textContent = data.selectedMessage;
+            } 
+            // Otherwise use the first message or a random one
+            else {
+              motdElement.textContent = data.messages[0];
+            }
+          } else {
+            motdElement.textContent = "Welcome to Tay's World!";
+          }
+        })
+        .catch(error => {
+          console.error('Error loading MOTD:', error);
+          motdElement.textContent = "Welcome to Tay's World!";
         });
     });
 
