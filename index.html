@@ -7,18 +7,22 @@
   <title>Tay's Profile</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <!-- Add Google Fonts for Press Start 2P -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
   <style>
-    /* Custom Minecraft Font - Local Files - Fixed Path and Improved Loading */
+    /* Remove local Minecraft font declarations */
+    /*
     @font-face {
       font-family: 'Minecraft';
       src: url('fonts/minecraft.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
-      font-display: block; /* Change from swap to block for better visibility during load */
+      font-display: block;
     }
     
-    /* Inline test font */
     @font-face {
       font-family: 'MinecraftTest';
       src: url('data:font/woff2;base64,d09GMgABAAAAAAx0ABIAAAAAGFQAAA...')
@@ -26,6 +30,7 @@
       font-weight: normal;
       font-style: normal;
     }
+    */
     
     /* global CSS variables (colors, etc) */
     :root {
@@ -766,7 +771,7 @@
       }
     }
 
-    /* MOTD Section Styles - Improved */
+    /* MOTD Section Styles - Updated with Press Start 2P */
     .motd-container {
       margin: 30px 0;
       padding: 20px;
@@ -775,16 +780,16 @@
     }
 
     .motd-text {
-      font-family: 'Minecraft', monospace;
+      font-family: 'Press Start 2P', cursive;
       color: #FFFF55; /* Minecraft yellow color */
-      font-size: 1.2rem;
-      line-height: 1.5;
+      font-size: 1rem; /* Slightly smaller to account for the new font */
+      line-height: 1.6;
       text-shadow: 2px 2px 0 #3F3F00; /* Minecraft-style shadow */
       display: inline-block;
       padding: 10px 20px;
       position: relative;
       animation: motdPulse 2s infinite ease-in-out;
-      letter-spacing: 0.6px; /* Minecraft-like letter spacing */
+      letter-spacing: 0.2px; /* Adjusted letter spacing */
       transform-origin: center; 
       -webkit-font-smoothing: none;
       background: rgba(0, 0, 0, 0.4); 
@@ -1383,14 +1388,14 @@
       // Create a font loading promise
       const fontPromise = new Promise((resolve, reject) => {
         if (document.fonts && 'load' in document.fonts) {
-          document.fonts.load('1em "Minecraft"')
+          document.fonts.load('1em "Press Start 2P"')
             .then(() => {
-              console.log("Minecraft font loaded successfully!");
-              motdElement.style.fontFamily = "'Minecraft', monospace";
+              console.log("Press Start 2P font loaded successfully!");
+              motdElement.style.fontFamily = "'Press Start 2P', cursive";
               resolve();
             })
             .catch((err) => {
-              console.error("Failed to load Minecraft font:", err);
+              console.error("Failed to load Press Start 2P font:", err);
               reject(err);
             });
         } else {
