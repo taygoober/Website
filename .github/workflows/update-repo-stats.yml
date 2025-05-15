@@ -1,0 +1,45 @@
+name: Update Repository Statistics
+on:
+  schedule:
+    - cron: '0 */1 * * *'  # Run hourly (you can adjust as needed)
+  workflow_dispatch:        # Allow manual triggers
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Fetch repository data
+        run: |
+          # Get main repository info
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               https://api.github.com/repos/${{ github.repository }} > temp_repo_data.json
+          
+          # Get commit information
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/commits?per_page=1" > temp_commit_data.json
+          
+          # Process data with jq to create a clean, combined stats file
+          jq -n --argfile repo temp_repo_data.json --argfile commits temp_commit_data.json '{
+            "name": $repo.name,
+            "stars": $repo.stargazers_count,
+            "forks": $repo.forks_count,
+            "updated_at": $repo.updated_at,
+            "last_commit_date": $commits[0].commit.author.date,
+            "last_commit_message": $commits[0].commit.message,
+            "last_updated": (now | todate)
+          }' > repo-stats.json
+          
+          # Clean up temp files
+          rm temp_repo_data.json temp_commit_data.json
+          
+      - name: Commit and push if changed
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add repo-stats.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update repository statistics"
+          git push
