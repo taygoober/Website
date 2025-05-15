@@ -678,6 +678,76 @@
       }
     }
     
+    /* Repository Stats styles */
+    .repo-stats {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 15px;
+      z-index: 100;
+      font-size: 0.9rem;
+      max-width: 250px;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .repo-stats:hover {
+      transform: translateY(-5px);
+    }
+    
+    .repo-stats h4 {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      color: var(--accent-color);
+    }
+    
+    .repo-stats h4 i {
+      margin-right: 8px;
+    }
+    
+    .repo-stats-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .repo-stats-item i {
+      margin-right: 8px;
+      width: 16px;
+      text-align: center;
+      color: var(--secondary-color);
+    }
+    
+    .repo-stats-loading {
+      font-style: italic;
+      color: #777;
+    }
+    
+    /* Dark theme overrides for repo stats */
+    body.dark-theme .repo-stats {
+      background-color: var(--card-bg);
+      border: 1px solid rgba(60, 60, 60, 0.5);
+    }
+    
+    body.dark-theme .repo-stats-loading {
+      color: #aaa;
+    }
+    
+    /* Make repo stats responsive */
+    @media (max-width: 768px) {
+      .repo-stats {
+        position: static;
+        margin: 20px auto;
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+    
   </style>
 </head>
 
@@ -691,6 +761,14 @@
   <!-- theme toggle button (moon/sun) -->
   <div class="theme-toggle" id="themeToggle">
     <i class="fas fa-moon"></i> <!-- default icon is moon (for light theme) -->
+  </div>
+
+  <!-- Repository Stats Box -->
+  <div class="repo-stats">
+    <h4><i class="fab fa-github"></i> Repository Stats</h4>
+    <div id="repoStats">
+      <div class="repo-stats-loading">Loading repository data...</div>
+    </div>
   </div>
 
   <!-- main container: holds all content -->
@@ -1091,6 +1169,146 @@
         downloadBtn.href = photo.dataset.highres || photo.src;
       });
     });
+
+    // Repository Statistics Fetching
+    document.addEventListener('DOMContentLoaded', function() {
+      // Repository information 
+      const username = 'taygoober';  // Your GitHub username
+      const repoName = 'Website';    // Your repository name
+      
+      const repoStatsElement = document.getElementById('repoStats');
+      
+      // Function to format "time ago"
+      function timeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        
+        let interval = Math.floor(seconds / 31536000); // years
+        if (interval > 1) return interval + " years ago";
+        if (interval === 1) return "1 year ago";
+        
+        interval = Math.floor(seconds / 2592000); // months
+        if (interval > 1) return interval + " months ago";
+        if (interval === 1) return "1 month ago";
+        
+        interval = Math.floor(seconds / 86400); // days
+        if (interval > 1) return interval + " days ago";
+        if (interval === 1) return "1 day ago";
+        
+        interval = Math.floor(seconds / 3600); // hours
+        if (interval > 1) return interval + " hours ago";
+        if (interval === 1) return "1 hour ago";
+        
+        interval = Math.floor(seconds / 60); // minutes
+        if (interval > 1) return interval + " minutes ago";
+        if (interval === 1) return "1 minute ago";
+        
+        if(seconds < 10) return "just now";
+        return Math.floor(seconds) + " seconds ago";
+      }
+      
+      // Fetch repository information from GitHub API
+      fetch(`https://api.github.com/repos/${username}/${repoName}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`GitHub API responded with status ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Repo data:", data); // Debug: Log the data we got
+          
+          // Format the last update date
+          let formattedDate = 'Unknown';
+          let lastUpdatedTimeAgo = '';
+          if (data.updated_at) {
+            const lastUpdated = new Date(data.updated_at);
+            formattedDate = lastUpdated.toLocaleDateString('en-US', {
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric'
+            });
+            lastUpdatedTimeAgo = timeAgo(lastUpdated);
+          }
+          
+          // Get star count (default to 0 if undefined)
+          const stars = data.stargazers_count || 0;
+          
+          // Now fetch commits count AND the last commit date
+          return fetch(`https://api.github.com/repos/${username}/${repoName}/commits?per_page=1`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`GitHub API responded with status ${response.status}`);
+              }
+              
+              // Get the latest commit info
+              return response.json().then(commits => {
+                let lastCommitDate = null;
+                let lastCommitTimeAgo = '';
+                
+                if (commits && commits.length > 0 && commits[0].commit) {
+                  lastCommitDate = new Date(commits[0].commit.author.date);
+                  lastCommitTimeAgo = timeAgo(lastCommitDate);
+                }
+              
+                // Get total count from the Link header if available
+                const linkHeader = response.headers.get('Link');
+                let totalCommits = 0;
+                
+                if (linkHeader && linkHeader.includes('rel="last"')) {
+                  // Extract last page number from Link header which indicates total commits
+                  const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+                  if (match) {
+                    totalCommits = parseInt(match[1]);
+                  }
+                } else {
+                  // If no Link header or no "last" rel, we might have just one commit
+                  totalCommits = commits.length;
+                }
+                
+                return { 
+                  stars, 
+                  formattedDate, 
+                  lastUpdatedTimeAgo,
+                  lastCommitTimeAgo,
+                  totalCommits 
+                };
+              });
+            });
+        })
+        .then(stats => {
+          console.log("Final stats:", stats); // Debug: Log the processed stats
+          
+          // Update the DOM with the fetched statistics
+          repoStatsElement.innerHTML = `
+            <div class="repo-stats-item">
+              <i class="fas fa-star"></i> 
+              ${stats.stars} Stars
+            </div>
+            <div class="repo-stats-item">
+              <i class="fas fa-code-commit"></i>
+              ${stats.totalCommits} Commits
+            </div>
+            <div class="repo-stats-item">
+              <i class="fas fa-calendar-alt"></i>
+              Last updated: ${stats.formattedDate}
+            </div>
+            <div class="repo-stats-item">
+              <i class="fas fa-history"></i>
+              Last commit: ${stats.lastCommitTimeAgo || 'Unknown'}
+            </div>
+          `;
+        })
+        .catch(error => {
+          console.error('Error fetching repository data:', error);
+          repoStatsElement.innerHTML = `
+            <div class="repo-stats-item">
+              <i class="fas fa-exclamation-circle"></i>
+              Couldn't load repository stats: ${error.message}
+            </div>
+          `;
+        });
+    });
+
   </script>
 
   <!-- Microsoft Clarity analytics script -->
