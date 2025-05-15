@@ -1,0 +1,49 @@
+name: Update Message of the Day
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+  workflow_dispatch:  # Allow manual triggers
+
+jobs:
+  update-motd:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Select random MOTD
+        run: |
+          # Read all messages from the motd.txt file
+          MESSAGES=$(cat motd.txt)
+          
+          # Count number of lines (messages)
+          TOTAL_MESSAGES=$(echo "$MESSAGES" | grep -c '".*",$')
+          
+          # Select a random message index (0-indexed)
+          RANDOM_INDEX=$(( $RANDOM % $TOTAL_MESSAGES ))
+          
+          # Extract the random message (remove trailing comma if present)
+          SELECTED_MESSAGE=$(echo "$MESSAGES" | grep '".*",$' | sed -n "$((RANDOM_INDEX+1))p" | sed 's/,$//')
+          
+          # Create motd.json with the selected message
+          echo "{" > motd.json
+          echo "  \"selectedMessage\": $SELECTED_MESSAGE," >> motd.json
+          echo "  \"messages\": [" >> motd.json
+          echo "$MESSAGES" >> motd.json
+          echo "  ]" >> motd.json
+          echo "}" >> motd.json
+          
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'github-action@users.noreply.github.com'
+          git add motd.json
+          git commit -m "Update MOTD for $(date '+%Y-%m-%d')" || echo "No changes to commit"
+          git push
