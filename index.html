@@ -9,21 +9,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
   <style>
-    /* Replace Minecraft font with better source */
+    /* Custom Minecraft Font - Local Files */
     @font-face {
       font-family: 'Minecraft';
-      src: url('https://fontlot.com/wp-content/uploads/2017/08/minecraft.ttf') format('truetype');
+      src: url('fonts/minecraft.woff2') format('woff2'),
+           url('fonts/minecraft.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
-    }
-    
-    /* Fallback font in case the above doesn't load */
-    @font-face {
-      font-family: 'MinecraftFallback';
-      src: url('https://dl.dafont.com/dl/?f=minecraft') format('truetype');
-      font-weight: normal;
-      font-style: normal;
     }
     
     /* global CSS variables (colors, etc) */
@@ -1376,56 +1369,67 @@
         });
     });
 
-    // Improved MOTD Loading and Display with fallback and better error handling
+    // Improved MOTD Loading and Display with better font handling
     document.addEventListener('DOMContentLoaded', function() {
       const motdElement = document.getElementById('motdText');
       
-      // Default messages in case API fails
-      const defaultMotds = [
-        "Welcome to Tay's World!",
-        "Do you like my website? OwO",
-        "Thanks for visiting my gallery today!",
-        "Have an amazing day, visitor!",
-        "Stay pawsome today!"
-      ];
+      // Preload the Minecraft font to ensure it's available before displaying text
+      const fontLoader = new FontFace('Minecraft', 'url(fonts/minecraft.woff2)');
       
-      // This URL should point to your file with MOTDs that gets updated by GitHub Actions
-      const motdUrl = 'https://raw.githubusercontent.com/taygoober/Website/main/motd.json';
-      
-      // Fetch the MOTD data
-      fetch(motdUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to load MOTD');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (Array.isArray(data.messages) && data.messages.length > 0) {
-            // If there's a selected message of the day in the JSON
-            if (data.selectedMessage) {
-              motdElement.textContent = data.selectedMessage;
-            } 
-            // Otherwise use the first message or a random one
-            else {
-              const randomIndex = Math.floor(Math.random() * data.messages.length);
-              motdElement.textContent = data.messages[randomIndex];
+      fontLoader.load().then(function(loadedFace) {
+        // Font has loaded - add it to the document
+        document.fonts.add(loadedFace);
+        
+        // Default messages in case API fails
+        const defaultMotds = [
+          "Welcome to Tay's World!",
+          "Do you like my website? OwO",
+          "Thanks for visiting my gallery today!",
+          "Have an amazing day, visitor!",
+          "Stay pawsome today!"
+        ];
+        
+        // This URL should point to your file with MOTDs that gets updated by GitHub Actions
+        const motdUrl = 'https://raw.githubusercontent.com/taygoober/Website/main/motd.json';
+        
+        // Fetch the MOTD data
+        fetch(motdUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to load MOTD');
             }
-          } else {
-            // Use a random default message
+            return response.json();
+          })
+          .then(data => {
+            if (Array.isArray(data.messages) && data.messages.length > 0) {
+              // If there's a selected message of the day in the JSON
+              if (data.selectedMessage) {
+                motdElement.textContent = data.selectedMessage;
+              } 
+              // Otherwise use a random message
+              else {
+                const randomIndex = Math.floor(Math.random() * data.messages.length);
+                motdElement.textContent = data.messages[randomIndex];
+              }
+            } else {
+              // Use a random default message
+              const randomIndex = Math.floor(Math.random() * defaultMotds.length);
+              motdElement.textContent = defaultMotds[randomIndex];
+            }
+          })
+          .catch(error => {
+            console.error('Error loading MOTD:', error);
+            // Use a random default message on error
             const randomIndex = Math.floor(Math.random() * defaultMotds.length);
             motdElement.textContent = defaultMotds[randomIndex];
-          }
-          
-          // Force font application after content is loaded
-          motdElement.style.fontFamily = "'Minecraft', 'MinecraftFallback', monospace";
-        })
-        .catch(error => {
-          console.error('Error loading MOTD:', error);
-          // Use a random default message on error
-          const randomIndex = Math.floor(Math.random() * defaultMotds.length);
-          motdElement.textContent = defaultMotds[randomIndex];
-        });
+          });
+      }).catch(function(error) {
+        console.error('Font loading failed:', error);
+        
+        // Still show message even if font fails
+        const randomIndex = Math.floor(Math.random() * defaultMotds.length);
+        motdElement.textContent = defaultMotds[randomIndex];
+      });
     });
 
   </script>
