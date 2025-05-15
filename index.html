@@ -782,14 +782,14 @@
     .motd-text {
       font-family: 'Press Start 2P', cursive;
       color: #FFFF55; /* Minecraft yellow color */
-      font-size: 1rem; /* Slightly smaller to account for the new font */
+      font-size: 1.4rem; /* Increased from 1rem to 1.4rem */
       line-height: 1.6;
       text-shadow: 2px 2px 0 #3F3F00; /* Minecraft-style shadow */
       display: inline-block;
-      padding: 10px 20px;
+      padding: 15px 25px; /* Slightly larger padding to match bigger text */
       position: relative;
-      animation: motdPulse 2s infinite ease-in-out;
-      letter-spacing: 0.2px; /* Adjusted letter spacing */
+      animation: motdPulse 1.5s infinite ease-in-out; /* Reduced from 2s to 1.5s for faster animation */
+      letter-spacing: 0.2px;
       transform-origin: center; 
       -webkit-font-smoothing: none;
       background: rgba(0, 0, 0, 0.4); 
@@ -798,7 +798,7 @@
     
     @keyframes motdPulse {
       0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
+      50% { transform: scale(1.08); } /* Increased from 1.03 to 1.08 for more motion */
       100% { transform: scale(1); }
     }
     
