@@ -9,14 +9,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
   <style>
-    /* Custom Minecraft Font - Local Files */
+    /* Custom Minecraft Font - Local Files - Fixed Path and Improved Loading */
     @font-face {
       font-family: 'Minecraft';
-      src: url('fonts/minecraft.woff2') format('woff2'),
-           url('fonts/minecraft.ttf') format('truetype');
+      src: url('fonts/minecraft.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
-      font-display: swap;
+      font-display: block; /* Change from swap to block for better visibility during load */
+    }
+    
+    /* Inline test font */
+    @font-face {
+      font-family: 'MinecraftTest';
+      src: url('data:font/woff2;base64,d09GMgABAAAAAAx0ABIAAAAAGFQAAA...')
+           format('woff2');
+      font-weight: normal;
+      font-style: normal;
     }
     
     /* global CSS variables (colors, etc) */
@@ -758,7 +766,7 @@
       }
     }
 
-    /* MOTD Section Styles - Cleanup */
+    /* MOTD Section Styles - Improved */
     .motd-container {
       margin: 30px 0;
       padding: 20px;
@@ -767,7 +775,7 @@
     }
 
     .motd-text {
-      font-family: 'Minecraft', monospace; /* Remove MinecraftFallback reference */
+      font-family: 'Minecraft', monospace;
       color: #FFFF55; /* Minecraft yellow color */
       font-size: 1.2rem;
       line-height: 1.5;
@@ -777,15 +785,10 @@
       position: relative;
       animation: motdPulse 2s infinite ease-in-out;
       letter-spacing: 0.6px; /* Minecraft-like letter spacing */
-      transform-origin: center; /* For the pulse animation */
+      transform-origin: center; 
       -webkit-font-smoothing: none;
-      background: rgba(0, 0, 0, 0.4); /* Darker background for better contrast */
+      background: rgba(0, 0, 0, 0.4); 
       border-radius: 8px;
-    }
-
-    /* Remove the no longer needed properties that could cause rendering issues */
-    .motd-text::before {
-      content: none;
     }
     
     @keyframes motdPulse {
@@ -1365,7 +1368,10 @@
       const motdElement = document.getElementById('motdText');
       console.log("MOTD initialization started");
       
-      // Default messages that will work even if API fails
+      // Show test message right away while loading font
+      motdElement.textContent = "Loading message...";
+      
+      // Default messages as fallback
       const defaultMotds = [
         "Welcome to Tay's World!",
         "Do you like my website? OwO",
@@ -1374,68 +1380,87 @@
         "Stay pawsome today!"
       ];
       
-      // Set a timeout to ensure we show something if everything fails
-      const messageTimeout = setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * defaultMotds.length);
-        motdElement.textContent = defaultMotds[randomIndex];
-        console.log("MOTD timeout triggered - using fallback message");
-      }, 3000); // Reduced timeout for quicker fallback
+      // Create a font loading promise
+      const fontPromise = new Promise((resolve, reject) => {
+        if (document.fonts && 'load' in document.fonts) {
+          document.fonts.load('1em "Minecraft"')
+            .then(() => {
+              console.log("Minecraft font loaded successfully!");
+              motdElement.style.fontFamily = "'Minecraft', monospace";
+              resolve();
+            })
+            .catch((err) => {
+              console.error("Failed to load Minecraft font:", err);
+              reject(err);
+            });
+        } else {
+          // Browser doesn't support font loading API
+          console.log("Browser doesn't support font loading API");
+          resolve();
+        }
+      });
       
-      // Directly try to fetch the MOTD data without waiting for font
-      fetch('motd.json')
-        .then(response => {
-          console.log("MOTD fetch response:", response.status);
-          if (!response.ok) {
-            throw new Error(`Failed to load MOTD: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          // Clear the timeout since we got a response
-          clearTimeout(messageTimeout);
-          
-          console.log("MOTD data received:", data);
-          
-          if (data && (data.selectedMessage || (Array.isArray(data.messages) && data.messages.length > 0))) {
-            // If there's a selected message of the day in the JSON
-            if (data.selectedMessage) {
-              motdElement.textContent = data.selectedMessage;
-              console.log("Using selectedMessage:", data.selectedMessage);
-            } 
-            // Otherwise use a random message
-            else if (Array.isArray(data.messages)) {
-              const randomIndex = Math.floor(Math.random() * data.messages.length);
-              motdElement.textContent = data.messages[randomIndex];
-              console.log("Using random message from array:", data.messages[randomIndex]);
-            }
-          } else {
-            // Use a random default message
-            const randomIndex = Math.floor(Math.random() * defaultMotds.length);
-            motdElement.textContent = defaultMotds[randomIndex];
-            console.log("No valid messages in JSON, using default:", defaultMotds[randomIndex]);
-          }
-        })
-        .catch(error => {
-          // Clear the timeout since we're handling the error now
-          clearTimeout(messageTimeout);
-          
-          console.error('Error loading MOTD JSON:', error);
-          // Use a fallback message immediately
+      // Check if the motd.json file exists with proper URL
+      console.log("Trying to fetch motd.json...");
+      
+      // Try both local and GitHub URLs
+      const urls = [
+        'motd.json',
+        './motd.json',
+        '../motd.json',
+        'https://raw.githubusercontent.com/taygoober/Website/main/motd.json'
+      ];
+      
+      // Try each URL one by one
+      function tryFetchingUrls(index) {
+        if (index >= urls.length) {
+          console.error("All MOTD URLs failed");
           const randomIndex = Math.floor(Math.random() * defaultMotds.length);
           motdElement.textContent = defaultMotds[randomIndex];
-          console.log("Using default message due to error:", defaultMotds[randomIndex]);
-        });
-      
-      // Load the font separately - this won't block the messages
-      if (document.fonts && 'load' in document.fonts) {
-        document.fonts.load('1em "Minecraft"').then(function() {
-          console.log("Minecraft font loaded successfully");
-          // Force font application after it's loaded
-          motdElement.style.fontFamily = "'Minecraft', monospace";
-        }).catch(function(err) {
-          console.error("Failed to load Minecraft font:", err);
-        });
+          return;
+        }
+        
+        const currentUrl = urls[index];
+        console.log(`Trying MOTD URL: ${currentUrl}`);
+        
+        fetch(currentUrl)
+          .then(response => {
+            if (!response.ok) {
+              console.warn(`Fetch failed for ${currentUrl}: ${response.status}`);
+              throw new Error(`Failed to load MOTD: ${response.status}`);
+            }
+            console.log(`Success fetching ${currentUrl}!`);
+            return response.json();
+          })
+          .then(data => {
+            console.log("MOTD data received:", data);
+            
+            if (data && (data.selectedMessage || (Array.isArray(data.messages) && data.messages.length > 0))) {
+              if (data.selectedMessage) {
+                motdElement.textContent = data.selectedMessage;
+                console.log("Using selectedMessage:", data.selectedMessage);
+              } 
+              else if (Array.isArray(data.messages)) {
+                const randomIndex = Math.floor(Math.random() * data.messages.length);
+                motdElement.textContent = data.messages[randomIndex];
+                console.log("Using random message:", data.messages[randomIndex]);
+              }
+            } else {
+              // Use a random default message
+              const randomIndex = Math.floor(Math.random() * defaultMotds.length);
+              motdElement.textContent = defaultMotds[randomIndex];
+              console.log("No valid messages in JSON, using default");
+            }
+          })
+          .catch(error => {
+            console.error(`Error with ${currentUrl}:`, error);
+            // Try next URL
+            tryFetchingUrls(index + 1);
+          });
       }
+      
+      // Start trying URLs
+      tryFetchingUrls(0);
     });
 
   </script>
