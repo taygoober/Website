@@ -1,3 +1,4 @@
 "Paw tuah",
 "Fun fact: This message changes every day!",
 "I hope you're having a wonderful day!",
+"The person reading this is amazing",
