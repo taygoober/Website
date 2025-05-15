@@ -1,7 +1,7 @@
 name: Update Repository Statistics
 on:
   schedule:
-    - cron: '0 */1 * * *'  # Run hourly (you can adjust as needed)
+    - cron: '0 * * * *'  # Run hourly (you can adjust as needed)
   workflow_dispatch:        # Allow manual triggers
 
 jobs:
