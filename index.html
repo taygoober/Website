@@ -9,14 +9,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
   <style>
-    /* Import Minecraft font */
+    /* Replace Minecraft font with better source */
     @font-face {
       font-family: 'Minecraft';
-      src: url('https://cdn.jsdelivr.net/gh/South-Paw/typeface-minecraft@master/font/minecraft.woff2') format('woff2'),
-           url('https://cdn.jsdelivr.net/gh/South-Paw/typeface-minecraft@master/font/minecraft.woff') format('woff');
+      src: url('https://fontlot.com/wp-content/uploads/2017/08/minecraft.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
+    }
+    
+    /* Fallback font in case the above doesn't load */
+    @font-face {
+      font-family: 'MinecraftFallback';
+      src: url('https://dl.dafont.com/dl/?f=minecraft') format('truetype');
+      font-weight: normal;
+      font-style: normal;
     }
     
     /* global CSS variables (colors, etc) */
@@ -767,42 +774,39 @@
     }
 
     .motd-text {
-      font-family: 'Minecraft', monospace;
+      font-family: 'Minecraft', 'MinecraftFallback', monospace;
       color: #FFFF55; /* Minecraft yellow color */
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       line-height: 1.5;
       text-shadow: 2px 2px 0 #3F3F00; /* Minecraft-style shadow */
       display: inline-block;
-      padding: 10px 15px;
+      padding: 10px 20px;
       position: relative;
       animation: motdPulse 2s infinite ease-in-out;
+      letter-spacing: 0.6px; /* Minecraft-like letter spacing */
+      image-rendering: pixelated; /* Help maintain pixelated look */
+      transform-origin: center; /* For the pulse animation */
+      font-smooth: never;
+      -webkit-font-smoothing: none;
+      background: rgba(0, 0, 0, 0.4); /* Darker background for better contrast */
+      border-radius: 8px;
     }
 
+    /* Remove the ::before pseudo-element since we've integrated the background into the element itself */
     .motd-text::before {
-      content: "";
-      position: absolute;
-      top: -10px;
-      left: -10px;
-      right: -10px;
-      bottom: -10px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      z-index: -1;
+      content: none;
     }
 
     /* Dark theme override */
     body.dark-theme .motd-text {
       text-shadow: 2px 2px 0 #000;
+      background: rgba(0, 0, 0, 0.6);
     }
 
-    body.dark-theme .motd-text::before {
-      background: rgba(0, 0, 0, 0.5);
-    }
-
-    /* MOTD Animation */
+    /* MOTD Animation - slightly modified for more authentic feel */
     @keyframes motdPulse {
       0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.03); }
       100% { transform: scale(1); }
     }
     
@@ -1372,9 +1376,18 @@
         });
     });
 
-    // MOTD Loading and Display
+    // Improved MOTD Loading and Display with fallback and better error handling
     document.addEventListener('DOMContentLoaded', function() {
       const motdElement = document.getElementById('motdText');
+      
+      // Default messages in case API fails
+      const defaultMotds = [
+        "Welcome to Tay's World!",
+        "Do you like my website? OwO",
+        "Thanks for visiting my gallery today!",
+        "Have an amazing day, visitor!",
+        "Stay pawsome today!"
+      ];
       
       // This URL should point to your file with MOTDs that gets updated by GitHub Actions
       const motdUrl = 'https://raw.githubusercontent.com/taygoober/Website/main/motd.json';
@@ -1395,15 +1408,23 @@
             } 
             // Otherwise use the first message or a random one
             else {
-              motdElement.textContent = data.messages[0];
+              const randomIndex = Math.floor(Math.random() * data.messages.length);
+              motdElement.textContent = data.messages[randomIndex];
             }
           } else {
-            motdElement.textContent = "Welcome to Tay's World!";
+            // Use a random default message
+            const randomIndex = Math.floor(Math.random() * defaultMotds.length);
+            motdElement.textContent = defaultMotds[randomIndex];
           }
+          
+          // Force font application after content is loaded
+          motdElement.style.fontFamily = "'Minecraft', 'MinecraftFallback', monospace";
         })
         .catch(error => {
           console.error('Error loading MOTD:', error);
-          motdElement.textContent = "Welcome to Tay's World!";
+          // Use a random default message on error
+          const randomIndex = Math.floor(Math.random() * defaultMotds.length);
+          motdElement.textContent = defaultMotds[randomIndex];
         });
     });
 
