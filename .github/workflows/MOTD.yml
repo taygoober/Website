@@ -15,35 +15,18 @@ jobs:
         
       - name: Select random MOTD
         run: |
-          # Read all messages from motd.txt
+          # Install jq for JSON processing
+          apt-get update && apt-get install -y jq
+          
+          # Create array from messages
           readarray -t message_array < motd.txt
           
-          # Count non-empty lines
-          TOTAL_MESSAGES=${#message_array[@]}
+          # Get random index
+          random_index=$(( RANDOM % ${#message_array[@]} ))
           
-          # Select random index
-          RANDOM_INDEX=$(( $RANDOM % $TOTAL_MESSAGES ))
+          # Select random message
+          selected_message="${message_array[$random_index]}"
           
-          # Get selected message
-          SELECTED_MESSAGE="${message_array[$RANDOM_INDEX]}"
-          
-          # Build JSON content
-          JSON_CONTENT="{\n"
-          JSON_CONTENT+="  \"selectedMessage\": $SELECTED_MESSAGE,\n"
-          JSON_CONTENT+="  \"messages\": [\n"
-          
-          # Add all messages with proper commas
-          for (( i=0; i<$TOTAL_MESSAGES; i++ )); do
-            JSON_CONTENT+="    ${message_array[$i]}"
-            if (( i < $TOTAL_MESSAGES-1 )); then
-              JSON_CONTENT+=",\n"
-            else
-              JSON_CONTENT+="\n"
-            fi
-          done
-          
-          JSON_CONTENT+="  ]\n"
-          JSON_CONTENT+="}\n"
-          
-          # Write to file
-          echo -e "$JSON_CONTENT" > motd.json
+          # Build JSON with jq
+          jq -n --arg msg "$selected_message" --argjson msgs "$(printf '%s\n' "${message_array[@]}" | jq -R -s 'split("\n")[:-1]')" \
+            '{"selectedMessage": $msg, "messages": $msgs}' > motd.json
