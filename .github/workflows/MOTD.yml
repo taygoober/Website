@@ -43,10 +43,20 @@ jobs:
           echo "  ]" >> motd.json
           echo "}" >> motd.json
           
-      - name: Commit and push changes
+      - name: Select random MOTD
         run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'github-action@users.noreply.github.com'
-          git add motd.json
-          git commit -m "Update MOTD for $(date '+%Y-%m-%d')" || echo "No changes to commit"
-          git push
+          # Install jq for JSON processing
+          apt-get update && apt-get install -y jq
+          
+          # Create array from messages
+          readarray -t message_array < motd.txt
+          
+          # Get random index
+          random_index=$(( RANDOM % ${#message_array[@]} ))
+          
+          # Select random message
+          selected_message="${message_array[$random_index]}"
+          
+          # Build JSON with jq
+          jq -n --arg msg "$selected_message" --argjson msgs "$(printf '%s\n' "${message_array[@]}" | jq -R -s 'split("\n")[:-1]')" \
+            '{"selectedMessage": $msg, "messages": $msgs}' > motd.json
