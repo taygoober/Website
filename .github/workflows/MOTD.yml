@@ -2,8 +2,9 @@ name: Update Message of the Day
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Run daily at midnight UTC
-  workflow_dispatch:  # Allow manual triggers
+    - cron: '0 23 * 10-3 *'  # 11:00 PM UTC (midnight CET) from October to March
+    - cron: '0 22 * 4-9 *'   # 10:00 PM UTC (midnight CEST) from April to September
+  workflow_dispatch:
 
 jobs:
   update-motd:
