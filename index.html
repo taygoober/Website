@@ -1373,17 +1373,21 @@
       const motdElement = document.getElementById('motdText');
       console.log("MOTD initialization started");
       
-      // Show test message right away while loading font
-      motdElement.textContent = "Loading message...";
-      
-      // Default messages as fallback
+      // Define default MOTD messages for fallback
       const defaultMotds = [
-        "Welcome to Tay's World!",
-        "Do you like my website? OwO",
-        "Thanks for visiting my gallery today!",
-        "Have an amazing day, visitor!",
-        "Stay pawsome today!"
+        "Welcome to Tay's world!",
+        "Photography is capturing moments that last forever.",
+        "Smile! You're on camera!",
+        "Furry and proud!",
+        "Nature is the best backdrop.",
+        "Every picture tells a story.",
+        "Adventure awaits!",
+        "Click, capture, cherish!",
+        "Life through my lens."
       ];
+      
+      // Show loading message while fetching
+      motdElement.textContent = "Loading message...";
       
       // Create a font loading promise
       const fontPromise = new Promise((resolve, reject) => {
@@ -1404,7 +1408,7 @@
           resolve();
         }
       });
-      
+          
       // Check if the motd.json file exists with proper URL
       console.log("Trying to fetch motd.json...");
       
