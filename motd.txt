@@ -1,6 +1,6 @@
-"Paw tuah"
-"Fun fact: This message changes every day!"
-"I hope you're having a wonderful day!"
-"The person reading this is amazing"
-"Tarkacore was here"
+"Paw tuah",
+"Fun fact: This message changes every day!",
+"I hope you're having a wonderful day!",
+"The person reading this is amazing",
+"Tarkacore was here",
 "Snouts high, ears perked, today is another chance to chase your dreams! -bloomy woomy"
