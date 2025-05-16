@@ -16,10 +16,17 @@ jobs:
       - name: Select random MOTD
         run: |
           # Install jq for JSON processing
-          apt-get update && apt-get install -y jq
+          sudo apt-get update && sudo apt-get install -y jq
           
-          # Create array from messages
-          readarray -t message_array < motd.txt
+          # Read and properly format the messages (stripping trailing commas)
+          readarray -t raw_message_array < motd.txt
+          message_array=()
+          
+          for msg in "${raw_message_array[@]}"; do
+            # Remove trailing comma if present
+            formatted_msg=$(echo "$msg" | sed 's/,$//')
+            message_array+=("$formatted_msg")
+          done
           
           # Get random index
           random_index=$(( RANDOM % ${#message_array[@]} ))
@@ -28,5 +35,17 @@ jobs:
           selected_message="${message_array[$random_index]}"
           
           # Build JSON with jq
-          jq -n --arg msg "$selected_message" --argjson msgs "$(printf '%s\n' "${message_array[@]}" | jq -R -s 'split("\n")[:-1]')" \
+          jq -n --arg msg "$selected_message" \
+            --argjson msgs "$(printf '%s\n' "${message_array[@]}" | jq -R . | jq -s .)" \
             '{"selectedMessage": $msg, "messages": $msgs}' > motd.json
+          
+          # Show result for logging
+          cat motd.json
+      
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'github-action@users.noreply.github.com'
+          git add motd.json
+          git commit -m "Update MOTD for $(date '+%Y-%m-%d')" || echo "No changes to commit"
+          git push
