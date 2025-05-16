@@ -18,14 +18,17 @@ jobs:
           # Install jq for JSON processing
           sudo apt-get update && sudo apt-get install -y jq
           
-          # Read and properly format the messages (stripping trailing commas)
+          # Read messages and remove quotes and commas
           readarray -t raw_message_array < motd.txt
           message_array=()
           
           for msg in "${raw_message_array[@]}"; do
-            # Remove trailing comma if present
-            formatted_msg=$(echo "$msg" | sed 's/,$//')
-            message_array+=("$formatted_msg")
+            # Remove quotes and trailing comma
+            cleaned_msg=$(echo "$msg" | sed 's/^"//' | sed 's/",$\|"$//')
+            
+            if [ ! -z "$cleaned_msg" ]; then
+              message_array+=("$cleaned_msg")
+            fi
           done
           
           # Get random index
@@ -34,10 +37,23 @@ jobs:
           # Select random message
           selected_message="${message_array[$random_index]}"
           
-          # Build JSON with jq
-          jq -n --arg msg "$selected_message" \
-            --argjson msgs "$(printf '%s\n' "${message_array[@]}" | jq -R . | jq -s .)" \
-            '{"selectedMessage": $msg, "messages": $msgs}' > motd.json
+          # Build JSON with jq (without adding extra quotes)
+          echo '{' > motd.json
+          echo "  \"selectedMessage\": \"$selected_message\"," >> motd.json
+          echo '  "messages": [' >> motd.json
+          
+          # Add each message to the JSON
+          for (( i=0; i<${#message_array[@]}; i++ )); do
+            echo -n "    \"${message_array[$i]}\"" >> motd.json
+            if [ $i -lt $((${#message_array[@]}-1)) ]; then
+              echo "," >> motd.json
+            else
+              echo "" >> motd.json
+            fi
+          done
+          
+          echo '  ]' >> motd.json
+          echo '}' >> motd.json
           
           # Show result for logging
           cat motd.json
