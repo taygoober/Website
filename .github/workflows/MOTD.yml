@@ -13,50 +13,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          
       - name: Select random MOTD
         run: |
-          # Read all messages from the motd.txt file
-          MESSAGES=$(cat motd.txt)
-          
-          # Convert messages to array with proper JSON formatting
-          FORMATTED_MESSAGES=$(echo "$MESSAGES" | sed ':a;N;$!ba;s/\n/,\n/g')
-          
-          # Count number of messages
-          TOTAL_MESSAGES=$(echo "$MESSAGES" | wc -l)
-          
-          # Select a random message index
-          RANDOM_INDEX=$(( $RANDOM % $TOTAL_MESSAGES ))
-          
-          # Extract the random message
-          SELECTED_MESSAGE=$(echo "$MESSAGES" | sed -n "$((RANDOM_INDEX+1))p")
-          
-          # Create properly formatted motd.json
-          echo "{" > motd.json
-          echo "  \"selectedMessage\": $SELECTED_MESSAGE," >> motd.json
-          echo "  \"messages\": [" >> motd.json
-          echo "    $FORMATTED_MESSAGES" >> motd.json
-          echo "  ]" >> motd.json
-          echo "}" >> motd.json
-          
-      - name: Select random MOTD
-        run: |
-          # Install jq for JSON processing
-          apt-get update && apt-get install -y jq
-          
-          # Create array from messages
+          # Read all messages from motd.txt
           readarray -t message_array < motd.txt
           
-          # Get random index
-          random_index=$(( RANDOM % ${#message_array[@]} ))
+          # Count non-empty lines
+          TOTAL_MESSAGES=${#message_array[@]}
           
-          # Select random message
-          selected_message="${message_array[$random_index]}"
+          # Select random index
+          RANDOM_INDEX=$(( $RANDOM % $TOTAL_MESSAGES ))
           
-          # Build JSON with jq
-          jq -n --arg msg "$selected_message" --argjson msgs "$(printf '%s\n' "${message_array[@]}" | jq -R -s 'split("\n")[:-1]')" \
-            '{"selectedMessage": $msg, "messages": $msgs}' > motd.json
+          # Get selected message
+          SELECTED_MESSAGE="${message_array[$RANDOM_INDEX]}"
+          
+          # Build JSON content
+          JSON_CONTENT="{\n"
+          JSON_CONTENT+="  \"selectedMessage\": $SELECTED_MESSAGE,\n"
+          JSON_CONTENT+="  \"messages\": [\n"
+          
+          # Add all messages with proper commas
+          for (( i=0; i<$TOTAL_MESSAGES; i++ )); do
+            JSON_CONTENT+="    ${message_array[$i]}"
+            if (( i < $TOTAL_MESSAGES-1 )); then
+              JSON_CONTENT+=",\n"
+            else
+              JSON_CONTENT+="\n"
+            fi
+          done
+          
+          JSON_CONTENT+="  ]\n"
+          JSON_CONTENT+="}\n"
+          
+          # Write to file
+          echo -e "$JSON_CONTENT" > motd.json
