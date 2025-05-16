@@ -23,20 +23,23 @@ jobs:
           # Read all messages from the motd.txt file
           MESSAGES=$(cat motd.txt)
           
-          # Count number of lines (messages)
-          TOTAL_MESSAGES=$(echo "$MESSAGES" | grep -c '".*",$')
+          # Convert messages to array with proper JSON formatting
+          FORMATTED_MESSAGES=$(echo "$MESSAGES" | sed ':a;N;$!ba;s/\n/,\n/g')
           
-          # Select a random message index (0-indexed)
+          # Count number of messages
+          TOTAL_MESSAGES=$(echo "$MESSAGES" | wc -l)
+          
+          # Select a random message index
           RANDOM_INDEX=$(( $RANDOM % $TOTAL_MESSAGES ))
           
-          # Extract the random message (remove trailing comma if present)
-          SELECTED_MESSAGE=$(echo "$MESSAGES" | grep '".*",$' | sed -n "$((RANDOM_INDEX+1))p" | sed 's/,$//')
+          # Extract the random message
+          SELECTED_MESSAGE=$(echo "$MESSAGES" | sed -n "$((RANDOM_INDEX+1))p")
           
-          # Create motd.json with the selected message
+          # Create properly formatted motd.json
           echo "{" > motd.json
           echo "  \"selectedMessage\": $SELECTED_MESSAGE," >> motd.json
           echo "  \"messages\": [" >> motd.json
-          echo "$MESSAGES" >> motd.json
+          echo "    $FORMATTED_MESSAGES" >> motd.json
           echo "  ]" >> motd.json
           echo "}" >> motd.json
           
