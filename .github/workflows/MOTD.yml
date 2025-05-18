@@ -2,7 +2,8 @@ name: Update Message of the Day
 
 on:
   schedule:
-    - cron: '2 * * * *'
+    - cron: '0 23 * 10-3 *'  # 11:00 PM UTC (midnight CET) from October to March
+    - cron: '0 22 * 4-9 *'   # 10:00 PM UTC (midnight CEST) from April to September
   workflow_dispatch:
 
 jobs:
@@ -61,4 +62,25 @@ jobs:
           echo '  "messages": [' >> motd.json
           
           # Add each message to the JSON
-          for (( i=0; i<${#message_array[@]}
+          for (( i=0; i<${#message_array[@]}; i++ )); do
+            echo -n "    \"${message_array[$i]}\"" >> motd.json
+            if [ $i -lt $((${#message_array[@]}-1)) ]; then
+              echo "," >> motd.json
+            else
+              echo "" >> motd.json
+            fi
+          done
+          
+          echo '  ]' >> motd.json
+          echo '}' >> motd.json
+          
+          # Show result for logging
+          cat motd.json
+      
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'github-action@users.noreply.github.com'
+          git add motd.json
+          git commit -m "Update MOTD for $(date '+%Y-%m-%d')" || echo "No changes to commit"
+          git push
