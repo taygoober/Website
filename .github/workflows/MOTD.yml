@@ -2,8 +2,9 @@ name: Update Message of the Day
 
 on:
   schedule:
-    - cron: '0 23 * 10-3 *'  # 11:00 PM UTC (midnight CET) from October to March
-    - cron: '0 22 * 4-9 *'   # 10:00 PM UTC (midnight CEST) from April to September
+    - cron: '0 23 * 1,2,3 *'    # 11:00 PM UTC (midnight CET) for Jan-Mar
+    - cron: '0 23 * 10,11,12 *' # 11:00 PM UTC (midnight CET) for Oct-Dec
+    - cron: '0 22 * 4,5,6,7,8,9 *'   # 10:00 PM UTC (midnight CEST) from April to September
   workflow_dispatch:
 
 jobs:
