@@ -2,1471 +2,840 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tay's Profile</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-  <!-- Add Google Fonts for Press Start 2P -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-  <style>
-    /* Remove local Minecraft font declarations */
-    /*
-    @font-face {
-      font-family: 'Minecraft';
-      src: url('fonts/minecraft.woff2') format('woff2');
-      font-weight: normal;
-      font-style: normal;
-      font-display: block;
-    }
-    
-    @font-face {
-      font-family: 'MinecraftTest';
-      src: url('data:font/woff2;base64,d09GMgABAAAAAAx0ABIAAAAAGFQAAA...')
-           format('woff2');
-      font-weight: normal;
-      font-style: normal;
-    }
-    */
-    
-    /* global CSS variables (colors, etc) */
-    :root {
-      --primary-color: #ff9eba;
-      --secondary-color: #91c4fd;
-      --text-color: #333;
-      --accent-color: #ff6b9c;
-      --bg-color: #f9f9f9;
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-      --transition: all 0.3s ease;
-    }
-
-    /* reset and base styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      /* background with fallback gradient */
-      background: url('output-onlinepngtools.png'), linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      background-attachment: fixed; /* keeps background static on scroll */
-      color: var(--text-color);
-      line-height: 1.6;
-      position: relative;
-      min-height: 100vh;
-    }
-
-    /* main container style */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    /* profile card container style */
-    .profile-container {
-      background-color: var(--card-bg);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      overflow: hidden; /* important for border-radius */
-      margin: 40px auto;
-      backdrop-filter: blur(10px); /* frosted glass effect */
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0; /* padding handled by inner elements */
-    }
-
-    /* profile header and avatar style */
-    .profile-header {
-      position: relative;
-      height: 200px;
-      background: linear-gradient(to right, #ff758c, #86a8e7); /* gradient banner */
-      display: flex;
-      justify-content: center;
-    }
-
-    .avatar-container {
-      position: relative;
-      top: 120px; /* position avatar overlapping header */
-    }
-
-    .avatar {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 6px solid white; /* white border around avatar */
-      box-shadow: var(--shadow);
-      transition: transform 0.3s ease;
-    }
-
-    .avatar:hover {
-      transform: scale(1.05); /* slight zoom on hover */
-    }
-
-    /* profile content area styles */
-    .profile-content {
-      margin-top: 100px; /* space for overlapping avatar */
-      padding: 20px 40px 40px;
-      text-align: center;
-    }
-
-    /* heading and tagline styles */
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-      /* gradient text effect */
-      background: linear-gradient(to right, #ff758c, #86a8e7);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      font-weight: 700;
-    }
-
-    .tag-line {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 25px;
-    }
-
-    /* social media links list */
-    .social-links {
-      display: flex;
-      flex-wrap: wrap; /* allow wrapping on small screens */
-      justify-content: center;
-      gap: 15px;
-      list-style: none;
-      margin: 25px 0;
-    }
-
-    .social-links li a {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      color: var(--text-color);
-      font-weight: 600;
-      padding: 10px 18px;
-      background-color: white;
-      border-radius: 50px; /* pill shape */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-      transition: var(--transition);
-    }
-
-    .social-links li a i {
-      margin-right: 8px;
-      font-size: 1.2rem;
-    }
-
-    .social-links li a:hover {
-      transform: translateY(-5px); /* lift effect */
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-      background: linear-gradient(to right, #ff758c, #86a8e7); /* gradient on hover */
-      color: white;
-    }
-
-    /* icon colors for each platform (normal state) */
-    .instagram { color: #E1306C; }
-    .telegram { color: #0088cc; }
-    .github { color: #333; }
-
-    /* content sections (About, Gallery, etc) */
-    .section {
-      background-color: var(--card-bg);
-      border-radius: 20px;
-      padding: 30px;
-      margin: 30px 0;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-
-    .section:hover {
-      transform: translateY(-5px); /* subtle lift on hover */
-    }
-
-    .section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--primary-color);
-      display: inline-block; /* so border only underlines text */
-    }
-
-    /* specifics of about section */
-    .about-content {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .about-content p {
-      font-size: 1.1rem;
-    }
-
-    /* interest tags styling */
-    .interests {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 15px;
-    }
-
-    .interest-tag {
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      color: white;
-      padding: 8px 15px;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      transition: var(--transition);
-    }
-
-    .interest-tag:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-
-    /* photo gallery section */
-    .gallery-title {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 30px;
-    }
-
-    .gallery {
-      display: grid;
-      /* responsive grid layout */
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .photo {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      height: 250px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: var(--transition);
-      background-color: #f0f0f0; /* fallback background */
-    }
-
-    .photo:hover {
-      transform: translateY(-10px) scale(1.02); /* more pronounced lift */
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* ensure image covers area */
-      transition: filter 0.5s ease, transform 0.3s ease;
-      filter: blur(20px); /* start blurred */
-      will-change: filter; /* optimize performance */
-    }
-
-    .photo img.loaded {
-      filter: blur(0); /* remove blur when loaded */
-    }
-
-    body.dark-theme .photo {
-      background-color: #2a2a2a; /* darker fallback for dark theme */
-    }
-
-    .photo-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent); /* gradient overlay */
-      padding: 20px;
-      color: white;
-      opacity: 0; /* hidden by default */
-      transition: var(--transition);
-    }
-
-    .photo:hover .photo-overlay {
-      opacity: 1; /* show overlay on hover */
-    }
-
-    /* footer section styles */
-    footer {
-      text-align: center;
-      padding: 30px 0;
-      background-color: var(--card-bg);
-      border-radius: 20px 20px 0 0; /* rounded top corners */
-      margin-top: 50px;
-    }
-
-    .contact-link {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 12px 25px;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      color: white;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: 600;
-      transition: var(--transition);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .contact-link:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Spotify widget container */
-    .spotify-section {
-      margin: 40px 0;
-    }
-
-    .spotify-widget {
-      border-radius: 16px;
-      overflow: hidden; /* clip to rounded corners */
-      box-shadow: var(--shadow);
-      margin: 0 auto;
-      max-width: 100%; /* responsive */
-    }
-
-    /* image modal styles */
-    .modal {
-      display: none; /* hidden by default */
-      position: fixed; /* sit on top */
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden; /* disable scroll */
-      background-color: rgba(0, 0, 0, 0.9);
-      animation: fadeIn 0.3s; /* fade-in animation */
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal-content {
-      margin: auto;
-      display: block;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); /* center */
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 8px;
-    }
-
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      color: #f1f1f1;
-      font-size: 40px;
-      font-weight: bold;
-      transition: var(--transition);
-      z-index: 1001; /* above image */
-    }
-
-    .close:hover,
-    .close:focus {
-      color: var(--primary-color);
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .download-btn {
-      position: absolute;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: var(--transition);
-    }
-
-    .download-btn:hover {
-      transform: translateX(-50%) translateY(-5px); /* lift effect */
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    /* scroll-to-top button */
-    .scroll-up {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      background-color: var(--primary-color);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: var(--transition);
-      opacity: 0; /* hidden */
-      visibility: hidden;
-      z-index: 100;
-    }
-
-    .scroll-up.active {
-      opacity: 1;
-      visibility: visible; /* show when active */
-    }
-
-    .scroll-up:hover {
-      background-color: var(--accent-color);
-      transform: translateY(-5px);
-    }
-
-    /* theme toggle button */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background-color: white;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      z-index: 100;
-      transition: var(--transition);
-    }
-
-    .theme-toggle:hover {
-      transform: rotate(45deg);
-    }
-
-    /* dark theme overrides */
-    body.dark-theme {
-      --text-color: #f1f1f1;
-      --bg-color: #121212;
-      --card-bg: rgba(30, 30, 30, 0.9);
-      background: url('output-onlinepngtools.png'), linear-gradient(135deg, #2b2b2b, #1a1a1a);
-    }
-
-    body.dark-theme .social-links li a {
-      background-color: #2d2d2d;
-      color: #f1f1f1;
-    }
-
-    body.dark-theme .theme-toggle {
-      background-color: #333;
-      color: #f1f1f1;
-    }
-
-    /* responsive layout changes */
-    @media (max-width: 768px) {
-      .profile-header {
-        height: 150px;
-      }
-
-      .avatar-container {
-        top: 90px; /* adjust avatar position */
-      }
-
-      .avatar {
-        width: 120px; /* smaller avatar */
-        height: 120px;
-      }
-
-      .profile-content {
-        margin-top: 70px; /* adjust content margin */
-        padding: 20px; /* less padding */
-      }
-
-      h1 {
-        font-size: 2rem; /* smaller heading */
-      }
-
-      .social-links {
-        flex-direction: column; /* stack vertically */
-        align-items: center;
-      }
-
-      .gallery {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      }
-
-      .photo {
-        height: 200px; /* smaller photos */
-      }
-    }
-
-    /* animation helper classes */
-    .animate__fadeInUp {
-      animation-delay: 0.3s;
-    }
-
-    /* staggered fade-in effect for sections */
-    .staggered-fade-in > * {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .staggered-fade-in > *.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* page loader styles */
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--bg-color); /* use theme bg */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease, visibility 0.5s;
-    }
-
-    .loader.hidden {
-      opacity: 0;
-      visibility: hidden; /* hide completely when done */
-    }
-
-    .loader-spinner {
-      width: 60px;
-      height: 60px;
-      border: 5px solid rgba(255, 155, 186, 0.3); /* lighter border */
-      border-radius: 50%;
-      border-top-color: var(--primary-color); /* spinner color */
-      animation: spin 1s ease-in-out infinite; /* rotation */
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loader-text {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      color: var(--text-color); /* use theme text color */
-    }
-
-    /* Gallery section divider */
-    .gallery-divider {
-      grid-column: 1 / -1; /* Span all columns */
-      text-align: center;
-      margin: 15px 0;
-      position: relative;
-    }
-    
-    .gallery-divider h3 {
-      display: inline-block;
-      background-color: var(--card-bg);
-      padding: 0 15px;
-      font-size: 1.3rem;
-      color: var(--text-color);
-      position: relative;
-      z-index: 1;
-    }
-    
-    .gallery-divider:before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      z-index: 0;
-    }
-    
-    /* Camera gear section styles */
-    .gear-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-      margin-top: 30px;
-    }
-    
-    .gear-card {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .gear-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-    }
-    
-    .gear-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(to right, var(--primary-color), var (--secondary-color));
-    }
-    
-    .gear-icon {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      color: var(--accent-color);
-      text-align: center;
-    }
-    
-    .camera-body .gear-icon {
-      color: #ff6b9c;
-    }
-    
-    .lens .gear-icon {
-      color: #91c4fd;
-    }
-    
-    .gear-card h3 {
-      font-size: 1.4rem;
-      margin-bottom: 8px;
-      color: var(--text-color);
-    }
-    
-    .gear-type {
-      font-size: 0.95rem;
-      color: #777;
-      margin-bottom: 15px;
-      font-style: italic;
-    }
-    
-    .gear-details {
-      margin-top: auto;
-      padding-top: 15px;
-      border-top: 1px dashed rgba(0, 0, 0, 0.1);
-    }
-    
-    .gear-details p {
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-    
-    /* Dark theme overrides for gear cards */
-    body.dark-theme .gear-card {
-      background: #2d2d2d;
-      border: 1px solid rgba(60, 60, 60, 0.5);
-    }
-    
-    body.dark-theme .gear-type {
-      color: #aaa;
-    }
-    
-    body.dark-theme .gear-details {
-      border-top: 1px dashed rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Responsive adjustments for gear cards */
-    @media (max-width: 768px) {
-      .gear-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .gear-card {
-        padding: 20px;
-      }
-    }
-    
-    /* Repository Stats styles */
-    .repo-stats {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      padding: 15px;
-      z-index: 100;
-      font-size: 0.9rem;
-      max-width: 250px;
-      transition: var(--transition);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .repo-stats:hover {
-      transform: translateY(-5px);
-    }
-    
-    .repo-stats h4 {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      font-size: 1rem;
-      color: var(--accent-color);
-    }
-    
-    .repo-stats h4 i {
-      margin-right: 8px;
-    }
-    
-    .repo-stats-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    
-    .repo-stats-item i {
-      margin-right: 8px;
-      width: 16px;
-      text-align: center;
-      color: var(--secondary-color);
-    }
-    
-    .repo-stats-loading {
-      font-style: italic;
-      color: #777;
-    }
-    
-    /* Dark theme overrides for repo stats */
-    body.dark-theme .repo-stats {
-      background-color: var(--card-bg);
-      border: 1px solid rgba(60, 60, 60, 0.5);
-    }
-    
-    body.dark-theme .repo-stats-loading {
-      color: #aaa;
-    }
-    
-    /* Make repo stats responsive */
-    @media (max-width: 768px) {
-      .repo-stats {
-        position: static;
-        margin: 20px auto;
-        width: 100%;
-        max-width: 100%;
-      }
-    }
-
-    /* MOTD Section Styles - Updated with Press Start 2P */
-    .motd-container {
-      margin: 30px 0;
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
-
-    .motd-text {
-      font-family: 'Press Start 2P', cursive;
-      color: #FFFF55; /* Minecraft yellow color */
-      font-size: 1.4rem; /* Increased from 1rem to 1.4rem */
-      line-height: 1.6;
-      text-shadow: 2px 2px 0 #3F3F00; /* Minecraft-style shadow */
-      display: inline-block;
-      padding: 15px 25px; /* Slightly larger padding to match bigger text */
-      position: relative;
-      animation: motdPulse 1.5s infinite ease-in-out; /* Reduced from 2s to 1.5s for faster animation */
-      letter-spacing: 0.2px;
-      transform-origin: center; 
-      -webkit-font-smoothing: none;
-      background: rgba(0, 0, 0, 0.4); 
-      border-radius: 8px;
-    }
-    
-    @keyframes motdPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); } /* Increased from 1.03 to 1.08 for more motion */
-      100% { transform: scale(1); }
-    }
-    
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tay's Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Google Fonts: Press Start 2P -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global CSS variables */
+        :root {
+            --primary-color: #ff9eba;
+            --secondary-color: #91c4fd;
+            --text-color: #333;
+            --accent-color: #ff6b9c;
+            --bg-color: #f9f9f9;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('output-onlinepngtools.png'), linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background-attachment: fixed;
+            color: var(--text-color);
+            line-height: 1.6;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Layout containers */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Profile card container */
+        .profile-container {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin: 40px auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0;
+        }
+
+        /* Header and avatar */
+        .profile-header {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(to right, #ff758c, #86a8e7);
+            display: flex;
+            justify-content: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            top: 120px;
+        }
+
+        .avatar {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid white;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Profile content */
+        .profile-content {
+            margin-top: 100px;
+            padding: 20px 40px 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #ff758c, #86a8e7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .tag-line {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* Social links styling */
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            list-style: none;
+            margin: 25px 0;
+        }
+
+        .social-links li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            padding: 10px 18px;
+            background-color: white;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+
+        .social-links li a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(to right, #ff758c, #86a8e7);
+            color: white;
+        }
+
+        .instagram { color: #E1306C; }
+        .telegram { color: #0088cc; }
+        .github { color: #333; }
+
+        /* Content sections */
+        .section {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        /* About section specifics */
+        .about-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+        }
+
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .interest-tag {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .interest-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Photo gallery */
+        .gallery-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .photo {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 250px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #f0f0f0;
+        }
+
+        .photo:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(20px);
+            transition: filter 0.5s ease, transform 0.3s ease;
+            will-change: filter;
+        }
+
+        .photo img.loaded {
+            filter: blur(0);
+        }
+
+        body.dark-theme .photo {
+            background-color: #2a2a2a;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 20px;
+            color: white;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .photo:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            background-color: var(--card-bg);
+            border-radius: 20px 20px 0 0;
+            margin-top: 50px;
+        }
+
+        .contact-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .contact-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Camera gear section */
+        .gear-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .gear-card {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gear-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .gear-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        }
+
+        .gear-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-align: center;
+        }
+
+        .camera-body .gear-icon {
+            color: #ff6b9c;
+        }
+
+        .lens .gear-icon {
+            color: #91c4fd;
+        }
+
+        .gear-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .gear-type {
+            font-size: 0.95rem;
+            color: #777;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .gear-details {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+
+        .gear-details p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Dark theme for gear cards */
+        body.dark-theme .gear-card {
+            background: #2d2d2d;
+            border: 1px solid rgba(60, 60, 60, 0.5);
+        }
+
+        body.dark-theme .gear-type {
+            color: #aaa;
+        }
+
+        body.dark-theme .gear-details {
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive gear cards */
+        @media (max-width: 768px) {
+            .gear-container {
+                grid-template-columns: 1fr;
+            }
+            .gear-card {
+                padding: 20px;
+            }
+        }
+
+        /* Repository stats styles */
+        .repo-stats {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 15px;
+            z-index: 100;
+            font-size: 0.9rem;
+            max-width: 250px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .repo-stats:hover {
+            transform: translateY(-5px);
+        }
+
+        .repo-stats h4 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            color: var(--accent-color);
+        }
+
+        .repo-stats h4 i {
+            margin-right: 8px;
+        }
+
+        .repo-stats-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .repo-stats-item i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        .repo-stats-loading {
+            font-style: italic;
+            color: #777;
+        }
+
+        /* Dark theme for repo stats */
+        body.dark-theme .repo-stats {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(60, 60, 60, 0.5);
+        }
+
+        body.dark-theme .repo-stats-loading {
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .repo-stats {
+                position: static;
+                margin: 20px auto;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* MOTD Section Styles */
+        .motd-container {
+            margin: 30px 0;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .motd-text {
+            font-family: 'Press Start 2P', cursive;
+            color: #FFFF55;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            text-shadow: 2px 2px 0 #3F3F00;
+            display: inline-block;
+            padding: 15px 25px;
+            animation: motdPulse 1.5s infinite ease-in-out;
+            letter-spacing: 0.2px;
+            transform-origin: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+        }
+
+        @keyframes motdPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 
 <body>
-  <!-- loading screen (spinner until page ready) -->
-  <div class="loader">
-    <div class="loader-spinner"></div>
-    <div class="loader-text">Loading Tay's world...</div>
-  </div>
-
-  <!-- theme toggle button (moon/sun) -->
-  <div class="theme-toggle" id="themeToggle">
-    <i class="fas fa-moon"></i> <!-- default icon is moon (for light theme) -->
-  </div>
-
-  <!-- Repository Stats Box -->
-  <div class="repo-stats">
-    <h4><i class="fab fa-github"></i> Repository Stats</h4>
-    <div id="repoStats">
-      <div class="repo-stats-loading">Loading repository data...</div>
-    </div>
-  </div>
-
-  <!-- main container: holds all content -->
-  <div class="container">
-    <!-- main profile card container -->
-    <div class="profile-container animate__animated animate__fadeIn">
-      
-      <!-- profile header section -->
-      <div class="profile-header">
-        <div class="avatar-container animate__animated animate__fadeInDown">
-          <img src="your-avatar.jpg" alt="Tay's Avatar" class="avatar">
-        </div>
-      </div>
-
-      <!-- profile content section -->
-      <div class="profile-content">
-        <h1 class="animate__animated animate__fadeInUp">Tay</h1>
-        <!-- tagline with dynamic age span -->
-        <p class="tag-line animate__animated animate__fadeInUp"><span id="age">18</span>-year-old Furry | Photographer | Developer</p>
-
-        <!-- social links list -->
-        <ul class="social-links staggered-fade-in">
-          <li><a href="https://www.instagram.com/taygoober/"><i class="fab fa-instagram instagram"></i> Instagram (Furry)</a></li>
-          <li><a href="https://www.instagram.com/tt7_deku/"><i class="fab fa-instagram instagram"></i> Instagram (Personal)</a></li>
-          <li><a href="https://t.me/taygoober"><i class="fab fa-telegram-plane telegram"></i> Telegram</a></li>
-          <li><a href="https://github.com/taygoober"><i class="fab fa-github github"></i> GitHub</a></li>
-        </ul>
-
-        <!-- MOTD Section -->
-        <div class="motd-container staggered-fade-in">
-          <div class="motd-text" id="motdText">Loading today's message...</div>
-        </div>
-
-        <!-- about me section -->
-        <div class="section staggered-fade-in">
-          <h2>About Me</h2>
-          <div class="about-content">
-            <!-- about me paragraph with dynamic age -->
-            <p>Hey there! I'm an <span id="age-about">18</span>-year-old (Yes this auto updates, you can check for yourself on the 20th of November :3) furry from northern Germany with a passion for photography.</p>
-            <p>I love going outside, meeting new people and taking photos.</p>
-            <p>Some other interests I have are cameras themselves, cars and furries (duh).</p>
-            <p>But I also enjoy sports like hiking, tennis or cycling.</p>
-            <p>I am excited to hear from you.</p>
-            
-            <!-- interests tags (hobbies) -->
-            <div class="interests">
-              <span class="interest-tag"><i class="fas fa-camera"></i> Photography</span>
-              <span class="interest-tag"><i class="fas fa-car"></i> Cars</span>
-              <span class="interest-tag"><i class="fas fa-hiking"></i> Hiking</span>
-              <span class="interest-tag"><i class="fas fa-leaf"></i> Nature</span>
-              <span class="interest-tag"><i class="fas fa-code"></i> Coding</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Camera Gear Section (replaces Spotify section) -->
-        <div class="spotify-section staggered-fade-in">
-          <h2>My Camera Gear</h2>
-          <div class="gear-container">
-            <!-- Camera Body Card -->
-            <div class="gear-card camera-body">
-              <div class="gear-icon">
-                <i class="fas fa-camera"></i>
-              </div>
-              <h3>Canon EOS RP</h3>
-              <p class="gear-type">Camera Body</p>
-              <div class="gear-details">
-                <p>Full-frame mirrorless camera with 26.2MP</p>
-                <p>Perfect for both photography and video</p>
-              </div>
-            </div>
-            
-            <!-- Lens Cards -->
-            <div class="gear-card lens">
-              <div class="gear-icon">
-                <i class="fas fa-circle-notch"></i>
-              </div>
-              <h3>Canon EF 55-200mm</h3>
-              <p class="gear-type">Telephoto Zoom Lens</p>
-              <div class="gear-details">
-                <p>f/4.5-5.6 II USM</p>
-                <p>Great for portraits and distant subjects</p>
-              </div>
-            </div>
-            
-            <div class="gear-card lens">
-              <div class="gear-icon">
-                <i class="fas fa-circle-notch"></i>
-              </div>
-              <h3>Canon EF 18-55mm</h3>
-              <p class="gear-type">Standard Zoom Lens</p>
-              <div class="gear-details">
-                <p>f/3.5-5.6 IS STM</p>
-                <p>Versatile everyday lens with image stabilization</p>
-              </div>
-            </div>
-            
-            <div class="gear-card lens">
-              <div class="gear-icon">
-                <i class="fas fa-circle-notch"></i>
-              </div>
-              <h3>Canon RF 24-105mm</h3>
-              <p class="gear-type">Standard Zoom Lens</p>
-              <div class="gear-details">
-                <p>f/4-7.1 IS STM</p>
-                <p>Native RF mount with excellent range and stabilization</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- photo gallery section -->
-        <div class="section staggered-fade-in">
-          <h2 class="gallery-title">Photo Gallery</h2>
-          <div class="gallery">  <!-- ONLY ONE gallery div -->
-            <!-- BLUESKY PHOTOS START -->
-                <!-- Gallery divider (optional) -->
-            <div class="gallery-divider">
-              <h3>Recent Work</h3>
-            </div>
-    <!-- Photo item with LQIP -->
-    <div class="photo">
-      <!-- Small blurry placeholder that will be replaced with high-res image -->
-      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAkI/8QAIRAAAAUDBAMAAAAAAAAAAAAAAQIDBAUGBxESEwAIFCEx/9oACAEBAAA/AK/bbdxmp8YWnGej4PI6kufpJVskqZRlnoZ5FaQ0c1fDKEDzyXOAFJRmUGZgWTKAA0Td/9k=" 
-           data-highres="my-photos/IMG_0708.JPG" 
-           alt="IMG_0708">
-      <div class="photo-overlay">
-        <h3>Photo</h3>
-        <p>IMG_0708</p>
-      </div>
+    <!-- Loading screen -->
+    <div class="loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Loading Tay's world...</div>
     </div>
 
-    <!-- Photo item with LQIP -->
-    <div class="photo">
-      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAcI/8QAIRAAAAQEBwEAAAAAAAAAAAAAAQIDBAUGBxESEwAIFBUh/9oACAEBAAA/AK/bbduY6zxnpOOSOlnHqRK7K5PUzHMi0019CAzoRkKWgokwwEyzU4IS9gIACJsP/9k=" 
-           data-highres="my-photos/IMG_0149.JPG" 
-           alt="IMG_0149">
-      <div class="photo-overlay">
-        <h3>Photo</h3>
-        <p>IMG_0149</p>
-      </div>
+    <!-- Theme toggle button -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
     </div>
 
-    <!-- Photo item with LQIP -->
-    <div class="photo">
-      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAkI/8QAHhAAAgIBBQEAAAAAAAAAAAAAAQIDBgQFBwAREhMh/9oACAEBAAA/AK/ffea67wnpuKS3YqLpJRsuQS1aZLd59FfO0ExQGx94wAFlagVSZAQWVLgAJMf/2Q==" 
-           data-highres="my-photos/IMG_0083_1.JPG" 
-           alt="IMG_0083_1">
-      <div class="photo-overlay">
-        <h3>Photo</h3>
-        <p>IMG_0083_1</p>
-      </div>
-    </div>
-    <!-- BLUESKY PHOTOS END -->
-            
-            <!-- Gallery divider (optional) -->
-            <div class="gallery-divider">
-              <h3>Featured Photos</h3>
-            </div>
-            
-            <!-- individual photo item -->
-            <div class="photo">
-              <img src="data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoKAAoAAUAmJaQAA3AA/vpAAP7mtJQn/zpl9cOW/4aXB4DT3KFIbaTZHjJtLdNOlqnJe5ibAAAA" 
-           data-highres="IMG_3554.webp" 
-           alt="Orion">
-              <div class="photo-overlay">
-                <h3>Orion</h3>
-              </div>
-            </div>
-            
-            <!-- individual photo item -->
-            <div class="photo">
-              <img src="data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAACwAQCdASoKAAoAAUAmJaQAA3AA/vpAAP7mtJQn/zpl9cOW/4aXB4DT3KFIbaTZHjJtLdNOlqnJe5ibAAAA" 
-           data-highres="IMG_5483_polarr.webp" 
-           alt="Beasty BitezZ">
-              <div class="photo-overlay">
-                <h3>Beasty BitezZ</h3>
-              </div>
-            </div>
-            
-            <!-- individual photo item -->
-            <div class="photo">
-              <img src="data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAACwAQCdASoKAAoAAUAmJaQAA3AA/vpAAP7mtJQn/zpl9cOW/4aXB4DT3KFIbaTZHjJtLdNOlqnJe5ibAAAA" 
-           data-highres="IMG_3549.webp" 
-           alt="Meabel">
-              <div class="photo-overlay">
-                <h3>Meabel</h3>
-              </div>
-            </div>
-          </div>
+    <!-- Repository stats box -->
+    <div class="repo-stats">
+        <h4><i class="fab fa-github"></i> Repository Stats</h4>
+        <div id="repoStats">
+            <div class="repo-stats-loading">Loading repository data...</div>
         </div>
+    </div>
 
-              <!-- footer section -->
-              <footer>
-                <p>© 2025 Tay • All rights reserved</p>
-                <a href="mailto:tay@furryfemboy.de" class="contact-link">
-                  <i class="fas fa-envelope"></i> Contact Me
-                </a>
-              </footer>
-              
-            </div> <!-- end of profile container -->
-          </div> <!-- end of main container -->
+    <!-- Profile container -->
+    <div class="container">
+        <!-- Profile card -->
+        <div class="profile-container animate__animated animate__fadeIn">
+            
+            <div class="profile-header">
+                <div class="avatar-container animate__animated animate__fadeInDown">
+                    <img src="your-avatar.jpg" alt="Tay's Avatar" class="avatar">
+                </div>
+            </div>
 
-  <!-- scroll up button -->
-  <div class="scroll-up" id="scrollUp">
-    <i class="fas fa-arrow-up"></i>
-  </div>
+            <div class="profile-content">
+                <h1 class="animate__animated animate__fadeInUp">Tay</h1>
+                <p class="tag-line animate__animated animate__fadeInUp"><span id="age">18</span>-year-old Furry | Photographer | Developer</p>
 
-  <!-- image modal popup -->
-  <div id="imageModal" class="modal">
-    <span class="close">&times;</span> <!-- modal close button -->
-    <img class="modal-content" id="modalImage"> <!-- modal image display -->
-    <a href="#" class="download-btn" id="downloadBtn" download>Download Image</a> <!-- download button -->
-  </div>
+                <ul class="social-links staggered-fade-in">
+                    <li><a href="https://www.instagram.com/taygoober/"><i class="fab fa-instagram instagram"></i> Instagram (Furry)</a></li>
+                    <li><a href="https://www.instagram.com/tt7_deku/"><i class="fab fa-instagram instagram"></i> Instagram (Personal)</a></li>
+                    <li><a href="https://t.me/taygoober"><i class="fab fa-telegram-plane telegram"></i> Telegram</a></li>
+                    <li><a href="https://github.com/taygoober"><i class="fab fa-github github"></i> GitHub</a></li>
+                </ul>
 
-  <script>
-    // loading screen logic
-    window.addEventListener('load', function() {
-      // wait a bit (smooth transition)
-      setTimeout(function() {
-        document.querySelector('.loader').classList.add('hidden');
-      }, 1000); // 1 second delay
+                <div class="motd-container staggered-fade-in">
+                    <div class="motd-text" id="motdText">Loading today's message...</div>
+                </div>
 
-      // calculate age after page loads
-      calculateAndDisplayAge();
-    });
+                <div class="section staggered-fade-in">
+                    <h2>About Me</h2>
+                    <div class="about-content">
+                        <p>Hey there! I'm an <span id="age-about">18</span>-year-old (Yes this auto updates) furry from northern Germany with a passion for photography.</p>
+                        <p>I love going outside, meeting new people and taking photos.</p>
+                        <p>Some other interests I have are cameras, cars, and furries.</p>
+                        <p>But I also enjoy sports like hiking, tennis, or cycling.</p>
+                        <p>I am excited to hear from you.</p>
 
-    // staggered fade-in animation logic
-    const observerOptions = {
-      threshold: 0.1 // trigger when 10% is visible
-    };
+                        <div class="interests">
+                            <span class="interest-tag"><i class="fas fa-camera"></i> Photography</span>
+                            <span class="interest-tag"><i class="fas fa-car"></i> Cars</span>
+                            <span class="interest-tag"><i class="fas fa-hiking"></i> Hiking</span>
+                            <span class="interest-tag"><i class="fas fa-leaf"></i> Nature</span>
+                            <span class="interest-tag"><i class="fas fa-code"></i> Coding</span>
+                        </div>
+                    </div>
+                </div>
 
-    // using intersection observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const elements = entry.target.children;
-          // add 'show' class to each child with delay
-          Array.from(elements).forEach((el, i) => {
-            setTimeout(() => {
-              el.classList.add('show');
-            }, i * 150); // 150ms delay per item
-          });
-          // stop observing this section
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
+                <div class="spotify-section staggered-fade-in">
+                    <h2>My Camera Gear</h2>
+                    <div class="gear-container">
+                        <div class="gear-card camera-body">
+                            <div class="gear-icon"><i class="fas fa-camera"></i></div>
+                            <h3>Canon EOS RP</h3>
+                            <p class="gear-type">Camera Body</p>
+                            <div class="gear-details">
+                                <p>Full-frame mirrorless camera with 26.2MP</p>
+                                <p>Perfect for both photography and video</p>
+                            </div>
+                        </div>
 
-    // observe all sections with 'staggered-fade-in'
-    document.querySelectorAll('.staggered-fade-in').forEach(section => {
-      observer.observe(section);
-    });
+                        <div class="gear-card lens">
+                            <div class="gear-icon"><i class="fas fa-circle-notch"></i></div>
+                            <h3>Canon EF 55-200mm</h3>
+                            <p class="gear-type">Telephoto Zoom Lens</p>
+                            <div class="gear-details">
+                                <p>f/4.5-5.6 II USM</p>
+                                <p>Great for portraits and distant subjects</p>
+                            </div>
+                        </div>
 
-    // dark mode toggle logic
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = themeToggle.querySelector('i');
-    
-    themeToggle.addEventListener('click', () => {
-      // toggle 'dark-theme' class on body
-      document.body.classList.toggle('dark-theme');
-      
-      // update icon (sun/moon) based on theme
-      if (document.body.classList.contains('dark-theme')) {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-      } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-      }
-      // maybe add localStorage to save theme
-    });
+                        <div class="gear-card lens">
+                            <div class="gear-icon"><i class="fas fa-circle-notch"></i></div>
+                            <h3>Canon EF 18-55mm</h3>
+                            <p class="gear-type">Standard Zoom Lens</p>
+                            <div class="gear-details">
+                                <p>f/3.5-5.6 IS STM</p>
+                                <p>Versatile everyday lens with image stabilization</p>
+                            </div>
+                        </div>
 
-    // scroll up button logic
-    const scrollUpButton = document.getElementById('scrollUp');
-    
-    // show/hide scroll-up button on scroll
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) { // show after scrolling 300px
-        scrollUpButton.classList.add('active');
-      } else {
-        scrollUpButton.classList.remove('active');
-      }
-    });
-    
-    // smooth scroll to top on click
-    scrollUpButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // smooth scroll
-      });
-    });
+                        <div class="gear-card lens">
+                            <div class="gear-icon"><i class="fas fa-circle-notch"></i></div>
+                            <h3>Canon RF 24-105mm</h3>
+                            <p class="gear-type">Standard Zoom Lens</p>
+                            <div class="gear-details">
+                                <p>f/4-7.1 IS STM</p>
+                                <p>Native RF mount with excellent range and stabilization</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    // image modal logic
-    const modal = document.getElementById('imageModal');
-    const modalImg = document.getElementById('modalImage');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const closeBtn = document.querySelector('.close');
-    const photos = document.querySelectorAll('.photo img');
+                <div class="section staggered-fade-in">
+                    <h2 class="gallery-title">Photo Gallery</h2>
+                    <div class="gallery">
+                        <div class="gallery-divider">
+                            <h3>Recent Work</h3>
+                        </div>
+                        <div class="photo">
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABA..." data-highres="my-photos/IMG_0708.JPG" alt="IMG_0708">
+                            <div class="photo-overlay">
+                                <h3>Photo</h3>
+                                <p>IMG_0708</p>
+                            </div>
+                        </div>
+                        <!-- Additional photo items... -->
+                    </div>
+                </div>
 
-    // add click event listener to each photo
-    photos.forEach(photo => {
-      photo.addEventListener('click', () => {
-        modal.style.display = 'block'; // show modal
-        // Use high-res source if available or fallback to current src
-        modalImg.src = photo.dataset.highres || photo.src;
-        downloadBtn.href = photo.dataset.highres || photo.src;
-      });
-    });
+                <footer>
+                    <p>© 2025 Tay • All rights reserved</p>
+                    <a href="mailto:tay@furryfemboy.de" class="contact-link">
+                        <i class="fas fa-envelope"></i> Contact Me
+                    </a>
+                </footer>
+            </div>
+        </div>
+    </div>
 
-    // close modal on X click
-    closeBtn.addEventListener('click', () => {
-      modal.style.display = 'none'; // hide modal
-    });
-
-    // close modal when clicking outside image
-    modal.addEventListener('click', (e) => {
-      // if clicked outside modal image, close modal
-      if (e.target === modal) {
-        modal.style.display = 'none'; // hide modal
-      }
-    });
-
-    // age calculation logic
-    function calculateAndDisplayAge() {
-      const birthDate = new Date(2005, 10, 20); // months are zero-based (0 = Jan)
-      const today = new Date();
-      
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDifference = today.getMonth() - birthDate.getMonth();
-      
-      // if birthday hasn't occurred yet this year
-      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      
-      // update age in tagline
-      const ageSpanTagline = document.getElementById('age');
-      if (ageSpanTagline) {
-        ageSpanTagline.textContent = age;
-      }
-
-      // update age in about section
-      const ageSpanAbout = document.getElementById('age-about');
-      if (ageSpanAbout) {
-        ageSpanAbout.textContent = age;
-      }
-    }
-
-    // Lazy loading with LQIP (Low Quality Image Placeholders)
-    document.addEventListener('DOMContentLoaded', function() {
-      const lazyImages = document.querySelectorAll('.photo img');
-      
-      if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              
-              // Create a new image element to load the high-res version in the background
-              const highResImage = new Image();
-              
-              // When the high-res image is loaded, swap it in
-              highResImage.onload = function() {
-                img.src = this.src;
-                img.classList.add('loaded');
-              };
-              
-              // Start loading the high-res image
-              highResImage.src = img.dataset.highres || img.src;
-              
-              // Stop observing once we've handled this image
-              imageObserver.unobserve(img);
-            }
-          });
-        }, {
-          rootMargin: '200px', // Load images 200px before they enter the viewport
-          threshold: 0.1      // Trigger when 10% of the image is visible
+    <script>
+        // Loading screen logic
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.querySelector('.loader').classList.add('hidden');
+            }, 1000);
+            calculateAndDisplayAge();
         });
-        
-        // Observe all images
-        lazyImages.forEach(img => {
-          imageObserver.observe(img);
-        });
-      } else {
-        // Fallback for browsers that don't support Intersection Observer
-        // Load all images immediately
-        lazyImages.forEach(img => {
-          if (img.dataset.highres) {
-            img.src = img.dataset.highres;
-          }
-          img.classList.add('loaded');
-        });
-      }
-    });
 
-    // Update image modal to use high-res images
-    photos.forEach(photo => {
-      photo.addEventListener('click', () => {
-        modal.style.display = 'block';
-        // Use high-res source if available or fallback to current src
-        modalImg.src = photo.dataset.highres || photo.src;
-        downloadBtn.href = photo.dataset.highres || photo.src;
-      });
-    });
-
-    // Repository Statistics Fetching
-    document.addEventListener('DOMContentLoaded', function() {
-      // Repository information 
-      const username = 'taygoober';  // Your GitHub username
-      const repoName = 'Website';    // Your repository name
-      
-      const repoStatsElement = document.getElementById('repoStats');
-      
-      // Function to format "time ago"
-      function timeAgo(date) {
-        const seconds = Math.floor((new Date() - date) / 1000);
-        
-        let interval = Math.floor(seconds / 31536000); // years
-        if (interval > 1) return interval + " years ago";
-        if (interval === 1) return "1 year ago";
-        
-        interval = Math.floor(seconds / 2592000); // months
-        if (interval > 1) return interval + " months ago";
-        if (interval === 1) return "1 month ago";
-        
-        interval = Math.floor(seconds / 86400); // days
-        if (interval > 1) return interval + " days ago";
-        if (interval === 1) return "1 day ago";
-        
-        interval = Math.floor(seconds / 3600); // hours
-        if (interval > 1) return interval + " hours ago";
-        if (interval === 1) return "1 hour ago";
-        
-        interval = Math.floor(seconds / 60); // minutes
-        if (interval > 1) return interval + " minutes ago";
-        if (interval === 1) return "1 minute ago";
-        
-        if(seconds < 10) return "just now";
-        return Math.floor(seconds) + " seconds ago";
-      }
-      
-      // Fetch repository information from GitHub API
-      fetch(`https://api.github.com/repos/${username}/${repoName}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`GitHub API responded with status ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log("Repo data:", data); // Debug: Log the data we got
-          
-          // Format the last update date
-          let formattedDate = 'Unknown';
-          let lastUpdatedTimeAgo = '';
-          if (data.updated_at) {
-            const lastUpdated = new Date(data.updated_at);
-            formattedDate = lastUpdated.toLocaleDateString('en-US', {
-              year: 'numeric', 
-              month: 'short', 
-              day: 'numeric'
-            });
-            lastUpdatedTimeAgo = timeAgo(lastUpdated);
-          }
-          
-          // Get star count (default to 0 if undefined)
-          const stars = data.stargazers_count || 0;
-          
-          // Now fetch commits count AND the last commit date
-          return fetch(`https://api.github.com/repos/${username}/${repoName}/commits?per_page=1&author=${username}`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`GitHub API responded with status ${response.status}`);
-              }
-              
-              // Get the latest commit info
-              return response.json().then(commits => {
-                let lastCommitDate = null;
-                let lastCommitTimeAgo = '';
-                
-                if (commits && commits.length > 0 && commits[0].commit) {
-                  lastCommitDate = new Date(commits[0].commit.author.date);
-                  lastCommitTimeAgo = timeAgo(lastCommitDate);
+        // Scroll-trigger animations
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    Array.from(entry.target.children).forEach((el, i) => {
+                        setTimeout(() => { el.classList.add('show'); }, i * 150);
+                    });
+                    observer.unobserve(entry.target);
                 }
-              
-                // Get total count from the Link header if available
-                const linkHeader = response.headers.get('Link');
-                let totalCommits = 0;
-                
-                if (linkHeader && linkHeader.includes('rel="last"')) {
-                  // Extract last page number from Link header which indicates total commits
-                  const match = linkHeader.match(/page=(\d+)>; rel="last"/);
-                  if (match) {
-                    totalCommits = parseInt(match[1]);
-                  }
-                } else {
-                  // If no Link header or no "last" rel, we might have just one commit
-                  totalCommits = commits.length;
-                }
-                
-                return { 
-                  stars, 
-                  formattedDate, 
-                  lastUpdatedTimeAgo,
-                  lastCommitTimeAgo,
-                  totalCommits 
-                };
-              });
             });
-        })
-        .then(stats => {
-          console.log("Final stats:", stats); // Debug: Log the processed stats
-          
-          // Update the DOM with the fetched statistics
-          repoStatsElement.innerHTML = `
-            <div class="repo-stats-item">
-              <i class="fas fa-star"></i> 
-              ${stats.stars} Stars
-            </div>
-            <div class="repo-stats-item">
-              <i class="fas fa-code-commit"></i>
-              ${stats.totalCommits} Commits
-            </div>
-            <div class="repo-stats-item">
-              <i class="fas fa-calendar-alt"></i>
-              Last updated: ${stats.formattedDate}
-            </div>
-            <div class="repo-stats-item">
-              <i class="fas fa-history"></i>
-              Last commit: ${stats.lastCommitTimeAgo || 'Unknown'}
-            </div>
-          `;
-        })
-        .catch(error => {
-          console.error('Error fetching repository data:', error);
-          repoStatsElement.innerHTML = `
-            <div class="repo-stats-item">
-              <i class="fas fa-exclamation-circle"></i>
-              Couldn't load repository stats: ${error.message}
-            </div>
-          `;
-        });
-    });
+        }, observerOptions);
 
-    // MOTD Loading - pulls messages only from motd.json
-    document.addEventListener('DOMContentLoaded', function() {
-      const motdElement = document.getElementById('motdText');
-      console.log("MOTD initialization started");
-      
-      // Show loading message while fetching
-      motdElement.textContent = "Loading message...";
-      
-      // Create a font loading promise
-      const fontPromise = new Promise((resolve, reject) => {
-        if (document.fonts && 'load' in document.fonts) {
-          document.fonts.load('1em "Press Start 2P"')
-            .then(() => {
-              console.log("Press Start 2P font loaded successfully!");
-              motdElement.style.fontFamily = "'Press Start 2P', cursive";
-              resolve();
-            })
-            .catch((err) => {
-              console.error("Failed to load Press Start 2P font:", err);
-              reject(err);
-            });
-        } else {
-          // Browser doesn't support font loading API
-          console.log("Browser doesn't support font loading API");
-          resolve();
-        }
-      });
-          
-      // Check if the motd.json file exists with proper URL
-      console.log("Trying to fetch motd.json...");
-      
-      // Try both local and GitHub URLs
-      const urls = [
-        'motd.json',
-        './motd.json',
-        '../motd.json',
-        'https://raw.githubusercontent.com/taygoober/Website/main/motd.json'
-      ];
-      
-      // Try each URL one by one
-      function tryFetchingUrls(index) {
-        if (index >= urls.length) {
-          console.error("All MOTD URLs failed");
-          motdElement.textContent = "Failed to load today's message";
-          return;
-        }
-        
-        const currentUrl = urls[index];
-        console.log(`Trying MOTD URL: ${currentUrl}`);
-        
-        fetch(currentUrl)
-          .then(response => {
-            if (!response.ok) {
-              console.warn(`Fetch failed for ${currentUrl}: ${response.status}`);
-              throw new Error(`Failed to load MOTD: ${response.status}`);
-            }
-            console.log(`Success fetching ${currentUrl}!`);
-            return response.json();
-          })
-          .then(data => {
-            console.log("MOTD data received:", data);
-            
-            if (data && (data.selectedMessage || (Array.isArray(data.messages) && data.messages.length > 0))) {
-              if (data.selectedMessage) {
-                motdElement.textContent = data.selectedMessage;
-                console.log("Using selectedMessage:", data.selectedMessage);
-              } 
-              else if (Array.isArray(data.messages)) {
-                const randomIndex = Math.floor(Math.random() * data.messages.length);
-                motdElement.textContent = data.messages[randomIndex];
-                console.log("Using random message:", data.messages[randomIndex]);
-              }
+        document.querySelectorAll('.staggered-fade-in').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Dark mode toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
             } else {
-              // No valid messages in JSON
-              motdElement.textContent = "No valid messages found in config";
-              console.log("No valid messages in JSON data");
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
             }
-          })
-          .catch(error => {
-            console.error(`Error with ${currentUrl}:`, error);
-            // Try next URL
-            tryFetchingUrls(index + 1);
-          });
-      }
-      
-      // Start trying URLs
-      tryFetchingUrls(0);
-    });
+        });
 
-  </script>
+        // Scroll-up button
+        const scrollUpButton = document.getElementById('scrollUp');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollUpButton.classList.add('active');
+            } else {
+                scrollUpButton.classList.remove('active');
+            }
+        });
+        scrollUpButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
 
-  <!-- Microsoft Clarity analytics script -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "m13xe45v09");
-  </script>
+        // Image modal
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const closeBtn = document.querySelector('.close');
+        const photos = document.querySelectorAll('.photo img');
+        photos.forEach(photo => {
+            photo.addEventListener('click', () => {
+                modal.style.display = 'block';
+                modalImg.src = photo.dataset.highres || photo.src;
+                downloadBtn.href = photo.dataset.highres || photo.src;
+            });
+        });
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+
+        // Age calculation
+        function calculateAndDisplayAge() {
+            const birthDate = new Date(2005, 10, 20);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            const ageSpans = document.querySelectorAll('#age, #age-about');
+            ageSpans.forEach(span => { span.textContent = age; });
+        }
+
+        // Lazy loading (LQIP)
+        document.addEventListener('DOMContentLoaded', () => {
+            const lazyImages = document.querySelectorAll('.photo img');
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            const highRes = img.dataset.highres;
+                            const highResImage = new Image();
+                            highResImage.onload = function() {
+                                img.src = this.src;
+                                img.classList.add('loaded');
+                            };
+                            highResImage.src = highRes || img.src;
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                }, { rootMargin: '200px', threshold: 0.1 });
+                lazyImages.forEach(img => imageObserver.observe(img));
+            } else {
+                lazyImages.forEach(img => {
+                    img.src = img.dataset.highres || img.src;
+                    img.classList.add('loaded');
+                });
+            }
+        });
+
+        // Fetch repository stats
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = 'taygoober';
+            const repoName = 'Website';
+            const repoStatsElement = document.getElementById('repoStats');
+
+            function timeAgo(date) {
+                const seconds = Math.floor((new Date() - date) / 1000);
+                let interval = Math.floor(seconds / 31536000);
+                if (interval > 1) return interval + " years ago";
+                if (interval === 1) return "1 year ago";
+                interval = Math.floor(seconds / 2592000);
+                if (interval > 1) return interval + " months ago";
+                if (interval === 1) return "1 month ago";
+                interval = Math.floor(seconds / 86400);
+                if (interval > 1) return interval + " days ago";
+                if (interval === 1) return "1 day ago";
+                interval = Math.floor(seconds / 3600);
+                if (interval > 1) return interval + " hours ago";
+                if (interval === 1) return "1 hour ago";
+                interval = Math.floor(seconds / 60);
+                if (interval > 1) return interval + " minutes ago";
+                if (interval === 1) return "1 minute ago";
+                return (seconds < 10) ? "just now" : Math.floor(seconds) + " seconds ago";
+            }
+
+            fetch(`https://api.github.com/repos/${username}/${repoName}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`GitHub API error ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Repo data:", data);
+                    let formattedDate = 'Unknown';
+                    let lastUpdatedTimeAgo = '';
+                    if (data.updated_at) {
+                        const lastUpdated = new Date(data.updated_at);
+                        formattedDate = lastUpdated.toLocaleDateString('en-US', {
+                            year: 'numeric', month: 'short', day: 'numeric'
+                        });
+                        lastUpdatedTimeAgo = timeAgo(lastUpdated);
+                    }
+                    const stars = data.stargazers_count || 0;
+                    return fetch(`https://api.github.com/repos/${username}/${repoName}/commits?per_page=1&author=${username}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error(`GitHub API error ${response.status}`);
+                            return response.json().then(commits => {
+                                let lastCommitDate = null;
+                                let lastCommitTimeAgo = '';
+                                if (commits && commits.length > 0) {
+                                    lastCommitDate = new Date(commits[0].commit.author.date);
+                                    lastCommitTimeAgo = timeAgo(lastCommitDate);
+                                }
+                                let totalCommits = 0;
+                                const linkHeader = response.headers.get('Link');
+                                if (linkHeader && linkHeader.includes('rel="last"')) {
+                                    const match = linkHeader.match(/page=(\d+)>; rel="last"/);
+                                    if (match) totalCommits = parseInt(match[1]);
+                                } else {
+                                    totalCommits = commits.length;
+                                }
+                                return { stars, formattedDate, lastUpdatedTimeAgo, lastCommitTimeAgo, totalCommits };
+                            });
+                        });
+                })
+                .then(stats => {
+                    console.log("Final stats:", stats);
+                    repoStatsElement.innerHTML = `
+                        <div class="repo-stats-item"><i class="fas fa-star"></i> ${stats.stars} Stars</div>
+                        <div class="repo-stats-item"><i class="fas fa-code-commit"></i> ${stats.totalCommits} Commits</div>
+                        <div class="repo-stats-item"><i class="fas fa-calendar-alt"></i> Last updated: ${stats.formattedDate}</div>
+                        <div class="repo-stats-item"><i class="fas fa-history"></i> Last commit: ${stats.lastCommitTimeAgo || 'Unknown'}</div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    repoStatsElement.innerHTML = `
+                        <div class="repo-stats-item">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Couldn't load repository stats: ${error.message}
+                        </div>
+                    `;
+                });
+        });
+    </script>
+
+    <!-- Microsoft Clarity analytics script -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "m13xe45v09");
+    </script>
 </body>
-
 </html>
