@@ -32,11 +32,29 @@ jobs:
             fi
           done
           
-          # Get random index
-          random_index=$(( RANDOM % ${#message_array[@]} ))
+          # Check if motd.json exists and get previous message
+          previous_message=""
+          if [ -f "motd.json" ]; then
+            previous_message=$(jq -r '.selectedMessage' motd.json)
+          fi
           
-          # Select random message
+          # Get random index and ensure it's different from previous
+          random_index=$(( RANDOM % ${#message_array[@]} ))
           selected_message="${message_array[$random_index]}"
+          
+          # If only one message exists, we can't get a different one
+          if [ ${#message_array[@]} -gt 1 ]; then
+            # Try up to 10 times to get a different message
+            attempts=0
+            while [ "$selected_message" = "$previous_message" ] && [ $attempts -lt 10 ]; do
+              random_index=$(( RANDOM % ${#message_array[@]} ))
+              selected_message="${message_array[$random_index]}"
+              attempts=$((attempts + 1))
+            done
+          fi
+          
+          echo "Previous message: $previous_message"
+          echo "New selected message: $selected_message"
           
           # Build JSON with jq (without adding extra quotes)
           echo '{' > motd.json
@@ -44,25 +62,4 @@ jobs:
           echo '  "messages": [' >> motd.json
           
           # Add each message to the JSON
-          for (( i=0; i<${#message_array[@]}; i++ )); do
-            echo -n "    \"${message_array[$i]}\"" >> motd.json
-            if [ $i -lt $((${#message_array[@]}-1)) ]; then
-              echo "," >> motd.json
-            else
-              echo "" >> motd.json
-            fi
-          done
-          
-          echo '  ]' >> motd.json
-          echo '}' >> motd.json
-          
-          # Show result for logging
-          cat motd.json
-      
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'github-action@users.noreply.github.com'
-          git add motd.json
-          git commit -m "Update MOTD for $(date '+%Y-%m-%d')" || echo "No changes to commit"
-          git push
+          for (( i=0; i<${#message_array[@]}
