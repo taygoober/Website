@@ -56,10 +56,15 @@ function updateHtml(photos) {
       const prettyName = filename.replace(/\.[^/.]+$/, "").replace(/-/g, " ");
       const displayName = prettyName.charAt(0).toUpperCase() + prettyName.slice(1);
       
+      // Use a low-res base64 placeholder and set the actual image in data-highres
+      const base64Placeholder = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAkI/8QAIRAAAAUDBAMAAAAAAAAAAAAAAQIDBAUGBxESEwAIFCEx/9oACAEBAAA/AK/bbdxmp8YWnGej4PI6kufpJVskqZRlnoZ5FaQ0c1fDKEDzyXOAFJRmUGZgWTKAA0Td/9k=";
+      
       return `
     <!-- Photo item -->
     <div class="photo">
-      <img src="${photo.path}" alt="${displayName}">
+      <img src="${base64Placeholder}" 
+           data-highres="${photo.path}" 
+           alt="${displayName}">
       <div class="photo-overlay">
         <h3>Photo</h3>
         <p>${displayName}</p>
@@ -75,11 +80,20 @@ function updateHtml(photos) {
         `<!-- BLUESKY PHOTOS START -->\n${photosHtml}\n    <!-- BLUESKY PHOTOS END -->`
       );
     } else {
-      // Add new section after gallery div opening
-      html = html.replace(
-        /<div class="gallery">/,
-        `<div class="gallery">\n    <!-- BLUESKY PHOTOS START -->\n${photosHtml}\n    <!-- BLUESKY PHOTOS END -->`
-      );
+      // Add new section after "Recent Work" divider
+      const recentWorkPattern = /(<div class="gallery-divider">\s*<h3>Recent Work<\/h3>\s*<\/div>\s*)/;
+      if (html.match(recentWorkPattern)) {
+        html = html.replace(
+          recentWorkPattern,
+          `$1\n    <!-- BLUESKY PHOTOS START -->\n${photosHtml}\n    <!-- BLUESKY PHOTOS END -->\n`
+        );
+      } else {
+        // Fallback: add after gallery div opening
+        html = html.replace(
+          /<div class="gallery">/,
+          `<div class="gallery">\n    <!-- BLUESKY PHOTOS START -->\n${photosHtml}\n    <!-- BLUESKY PHOTOS END -->`
+        );
+      }
     }
     
     // Write the updated HTML
