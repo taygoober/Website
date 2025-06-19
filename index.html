@@ -747,6 +747,65 @@
 		50% { transform: scale(1.08); }
 		100% { transform: scale(1); }
 	}
+	
+	/* Thoughts section styles */
+	.thoughts-section {
+		margin: 30px 0;
+	}
+	
+	.thoughts-bubble {
+		background: white;
+		border-radius: 20px;
+		padding: 25px;
+		box-shadow: var(--shadow);
+		position: relative;
+		border: 2px solid var(--primary-color);
+		transition: var(--transition);
+	}
+	
+	.thoughts-bubble:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+	}
+	
+	.thoughts-bubble h3 {
+		margin-bottom: 15px;
+		font-size: 1.4rem;
+		color: var(--accent-color);
+	}
+	
+	.thoughts-bubble p {
+		font-size: 1.1rem;
+		line-height: 1.6;
+		color: var(--text-color);
+	}
+	
+	.thoughts-date {
+		margin-top: 15px;
+		font-size: 0.9rem;
+		color: #777;
+		text-align: right;
+		font-style: italic;
+	}
+	
+	body.dark-theme .thoughts-bubble {
+		background: #2d2d2d;
+		border-color: var(--accent-color);
+	}
+	
+	body.dark-theme .thoughts-bubble p {
+		color: #f1f1f1;
+	}
+	
+	body.dark-theme .thoughts-date {
+		color: #aaa;
+	}
+	
+	@media (max-width: 768px) {
+		.thoughts-bubble {
+			padding: 20px;
+		}
+	}
 	</style>
 </head>
 
@@ -788,6 +847,15 @@
 
 				<div class="motd-container staggered-fade-in">
 					<div class="motd-text" id="motdText">Loading today's message...</div>
+				</div>
+
+				<!-- What's on my mind section -->
+				<div class="thoughts-section staggered-fade-in">
+					<div class="thoughts-bubble">
+						<h3>What's on my mind</h3>
+						<p id="thoughtsText">Loading thoughts...</p>
+						<div class="thoughts-date" id="thoughtsDate">Updating...</div>
+					</div>
 				</div>
 
 				<div class="section staggered-fade-in">
@@ -1316,8 +1384,77 @@
 		}
 		
 		tryFetchingUrls(0);
-	});
-	</script>
+		
+		// Load thoughts from thoughts.json
+		const thoughtsText = document.getElementById('thoughtsText');
+		const thoughtsDate = document.getElementById('thoughtsDate');
+		
+		const thoughtsUrls = [
+			'thoughts.json',
+			'./thoughts.json',
+			'../thoughts.json',
+			'https://raw.githubusercontent.com/taygoober/Website/main/thoughts.json'
+		];
+		
+		function tryFetchingThoughts(index) {
+			if (index >= thoughtsUrls.length) {
+				console.error("All thoughts.json URLs failed");
+				thoughtsText.textContent = "Failed to load my thoughts";
+				thoughtsDate.textContent = "Error fetching data";
+				return;
+			}
+			
+			const currentUrl = thoughtsUrls[index];
+			console.log(`Trying thoughts.json URL: ${currentUrl}`);
+			
+			fetch(currentUrl)
+				.then(response => {
+					if (!response.ok) {
+						console.warn(`Fetch failed for ${currentUrl}: ${response.status}`);
+						throw new Error(`Failed to load thoughts: ${response.status}`);
+					}
+					console.log(`Success fetching ${currentUrl}!`);
+					return response.text(); // Get as text first to handle possible comments
+				})
+				.then(textData => {
+					// Remove any comments or non-JSON content before parsing
+					let jsonString = textData;
+					if (jsonString.includes('{')) {
+						jsonString = jsonString.substring(jsonString.indexOf('{'));
+					}
+					
+					try {
+						const data = JSON.parse(jsonString);
+						console.log("Thoughts data received:", data);
+						
+						if (data && data.text) {
+							thoughtsText.textContent = data.text;
+							console.log("Using thoughts text:", data.text);
+							
+							if (data.date) {
+								thoughtsDate.textContent = `Updated: ${data.date}`;
+								console.log("Using thoughts date:", data.date);
+							} else {
+								thoughtsDate.textContent = "Updated recently";
+							}
+						} else {
+							thoughtsText.textContent = "No thoughts found in config";
+							thoughtsDate.textContent = "Missing data";
+							console.log("No valid thoughts in JSON data");
+						}
+					} catch (parseError) {
+						console.error("Error parsing thoughts JSON:", parseError);
+						throw new Error("Invalid JSON format");
+					}
+				})
+				.catch(error => {
+					console.error(`Error with ${currentUrl}:`, error);
+					tryFetchingThoughts(index + 1);
+				});
+		}
+		
+		tryFetchingThoughts(0);
+	});	</script>
 
 	<script type="text/javascript">
 	(function(c,l,a,r,i,t,y){
