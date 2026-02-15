@@ -1179,10 +1179,15 @@
 					const img = entry.target;
 					// Load the high-res image for preview (it will be scaled down by CSS)
 					if (img.dataset.highres) {
-						img.src = img.dataset.highres;
+						// Set onload handler before changing src to handle cached images
 						img.onload = () => {
 							img.classList.add('loaded');
 						};
+						// Check if image is already loaded (cached)
+						if (img.complete) {
+							img.classList.add('loaded');
+						}
+						img.src = img.dataset.highres;
 					} else {
 						img.classList.add('loaded');
 					}
