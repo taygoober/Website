@@ -1177,20 +1177,24 @@
 					if (entry.isIntersecting) {
 						const img = entry.target;
 						
+						// Create a new image object to preload the high-res version
 						const highResImage = new Image();
 						
 						highResImage.onload = function() {
+							// Only after the high-res image is fully loaded, swap the source
 							img.src = this.src;
 							img.classList.add('loaded');
 						};
 						
+						// Start loading the high-res image
 						highResImage.src = img.dataset.highres || img.src;
 						
+						// Stop observing this image
 						imageObserver.unobserve(img);
 					}
 				});
 			}, {
-				rootMargin: '200px',
+				rootMargin: '50px',
 				threshold: 0.1
 			});
 			
