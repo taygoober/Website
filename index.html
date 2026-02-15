@@ -920,7 +920,8 @@
 							<div class="gear-icon">
 								<i class="fas fa-circle-notch"></i>
 							</div>
-							<h3>Canon RF 85mm</h3>
+							<h3>Canon RF</h3>
+							<h3>85mm</h3>
 							<p class="gear-type">Prime Lens</p>
 							<div class="gear-details">
 								<p>f/2 IS STM Macro</p>
@@ -1127,13 +1128,17 @@
 	const modalImg = document.getElementById('modalImage');
 	const downloadBtn = document.getElementById('downloadBtn');
 	const closeBtn = document.querySelector('.close');
-	const photos = document.querySelectorAll('.photo img');
+	const photoContainers = document.querySelectorAll('.photo');
 
-	photos.forEach(photo => {
-		photo.addEventListener('click', () => {
-			modal.style.display = 'block';
-			modalImg.src = photo.dataset.highres || photo.src;
-			downloadBtn.href = photo.dataset.highres || photo.src;
+	photoContainers.forEach(container => {
+		container.addEventListener('click', () => {
+			const img = container.querySelector('img');
+			if (img) {
+				const highRes = img.dataset.highres || img.src;
+				modal.style.display = 'block';
+				modalImg.src = highRes;
+				downloadBtn.href = highRes;
+			}
 		});
 	});
 
