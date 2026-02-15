@@ -24,7 +24,7 @@ function getLatestPhotos() {
         return ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext);
       })
       .map(file => {
-        const filePath = path.join(PHOTOS_DIR, file);
+        const filePath = path.join(PHOTOS_DIR, file).replace(/\\/g, '/');
         const stats = fs.statSync(filePath);
         return {
           file: file,
