@@ -230,14 +230,13 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: filter 0.5s ease, opacity 0.5s ease, transform 0.3s ease;
+		transition: filter 0.5s ease, transform 0.3s ease;
 		filter: blur(20px);
-		will-change: filter, opacity;
+		will-change: filter;
 	}
 
 	.photo img.loaded {
 		filter: blur(0);
-		opacity: 0;
 	}
 
 	body.dark-theme .photo {
@@ -920,8 +919,7 @@
 							<div class="gear-icon">
 								<i class="fas fa-circle-notch"></i>
 							</div>
-							<h3>Canon RF</h3>
-							<h3>85mm</h3>
+							<h3>Canon RF 85mm</h3>
 							<p class="gear-type">Prime Lens</p>
 							<div class="gear-details">
 								<p>f/2 IS STM Macro</p>
@@ -1128,17 +1126,13 @@
 	const modalImg = document.getElementById('modalImage');
 	const downloadBtn = document.getElementById('downloadBtn');
 	const closeBtn = document.querySelector('.close');
-	const photoContainers = document.querySelectorAll('.photo');
+	const photos = document.querySelectorAll('.photo img');
 
-	photoContainers.forEach(container => {
-		container.addEventListener('click', () => {
-			const img = container.querySelector('img');
-			if (img) {
-				const highRes = img.dataset.highres || img.src;
-				modal.style.display = 'block';
-				modalImg.src = highRes;
-				downloadBtn.href = highRes;
-			}
+	photos.forEach(photo => {
+		photo.addEventListener('click', () => {
+			modal.style.display = 'block';
+			modalImg.src = photo.dataset.highres || photo.src;
+			downloadBtn.href = photo.dataset.highres || photo.src;
 		});
 	});
 
@@ -1176,65 +1170,12 @@
 
 	document.addEventListener('DOMContentLoaded', function() {
 		const lazyImages = document.querySelectorAll('.photo img');
-		
-		if ('IntersectionObserver' in window) {
-			const imageObserver = new IntersectionObserver((entries) => {
-				entries.forEach(entry => {
-					if (entry.isIntersecting) {
-						const img = entry.target;
-						const highResUrl = img.dataset.highres;
-						
-						if (highResUrl) {
-							// Preload the high-res image in the background
-							const highResImage = new Image();
-							
-							highResImage.onload = function() {
-								// Set as background-image on the .photo container for gallery preview
-								const photoContainer = img.closest('.photo');
-								if (photoContainer) {
-									photoContainer.style.backgroundImage = `url('${highResUrl}')`;
-									photoContainer.style.backgroundSize = 'cover';
-									photoContainer.style.backgroundPosition = 'center';
-								}
-								// Fade out the placeholder img to reveal the background
-								img.classList.add('loaded');
-								// Mark as preloaded so modal can use it instantly
-								img.dataset.preloaded = 'true';
-							};
-							
-							// Start loading the high-res image without changing img.src
-							highResImage.src = highResUrl;
-						} else {
-							img.classList.add('loaded');
-						}
-						
-						// Stop observing this image
-						imageObserver.unobserve(img);
-					}
-				});
-			}, {
-				rootMargin: '200px',
-				threshold: 0.01
-			});
-			
-			lazyImages.forEach(img => {
-				imageObserver.observe(img);
-			});
-		} else {
-			// Fallback: set background-image instead of swapping src
-			lazyImages.forEach(img => {
-				const highResUrl = img.dataset.highres;
-				if (highResUrl) {
-					const photoContainer = img.closest('.photo');
-					if (photoContainer) {
-						photoContainer.style.backgroundImage = `url('${highResUrl}')`;
-						photoContainer.style.backgroundSize = 'cover';
-						photoContainer.style.backgroundPosition = 'center';
-					}
-				}
-				img.classList.add('loaded');
-			});
-		}
+
+		// Keep gallery thumbnails low-res.
+		// High-res images are only requested when a user clicks an image to open the modal.
+		lazyImages.forEach(img => {
+			img.classList.add('loaded');
+		});
 	});
 
 	document.addEventListener('DOMContentLoaded', function() {
