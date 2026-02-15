@@ -230,13 +230,14 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: filter 0.5s ease, transform 0.3s ease;
+		transition: filter 0.5s ease, opacity 0.5s ease, transform 0.3s ease;
 		filter: blur(20px);
-		will-change: filter;
+		will-change: filter, opacity;
 	}
 
 	.photo img.loaded {
 		filter: blur(0);
+		opacity: 0;
 	}
 
 	body.dark-theme .photo {
@@ -1176,47 +1177,59 @@
 				entries.forEach(entry => {
 					if (entry.isIntersecting) {
 						const img = entry.target;
+						const highResUrl = img.dataset.highres;
 						
-						// Create a new image object to preload the high-res version
-						const highResImage = new Image();
-						
-						highResImage.onload = function() {
-							// Only after the high-res image is fully loaded, swap the source
-							img.src = this.src;
+						if (highResUrl) {
+							// Preload the high-res image in the background
+							const highResImage = new Image();
+							
+							highResImage.onload = function() {
+								// Set as background-image on the .photo container for gallery preview
+								const photoContainer = img.closest('.photo');
+								if (photoContainer) {
+									photoContainer.style.backgroundImage = `url('${highResUrl}')`;
+									photoContainer.style.backgroundSize = 'cover';
+									photoContainer.style.backgroundPosition = 'center';
+								}
+								// Fade out the placeholder img to reveal the background
+								img.classList.add('loaded');
+								// Mark as preloaded so modal can use it instantly
+								img.dataset.preloaded = 'true';
+							};
+							
+							// Start loading the high-res image without changing img.src
+							highResImage.src = highResUrl;
+						} else {
 							img.classList.add('loaded');
-						};
-						
-						// Start loading the high-res image
-						highResImage.src = img.dataset.highres || img.src;
+						}
 						
 						// Stop observing this image
 						imageObserver.unobserve(img);
 					}
 				});
 			}, {
-				rootMargin: '50px',
-				threshold: 0.1
+				rootMargin: '200px',
+				threshold: 0.01
 			});
 			
 			lazyImages.forEach(img => {
 				imageObserver.observe(img);
 			});
 		} else {
+			// Fallback: set background-image instead of swapping src
 			lazyImages.forEach(img => {
-				if (img.dataset.highres) {
-					img.src = img.dataset.highres;
+				const highResUrl = img.dataset.highres;
+				if (highResUrl) {
+					const photoContainer = img.closest('.photo');
+					if (photoContainer) {
+						photoContainer.style.backgroundImage = `url('${highResUrl}')`;
+						photoContainer.style.backgroundSize = 'cover';
+						photoContainer.style.backgroundPosition = 'center';
+					}
 				}
 				img.classList.add('loaded');
 			});
 		}
-	});
-
-	photos.forEach(photo => {
-		photo.addEventListener('click', () => {
-			modal.style.display = 'block';
-			modalImg.src = photo.dataset.highres || photo.src;
-			downloadBtn.href = photo.dataset.highres || photo.src;
-		});
 	});
 
 	document.addEventListener('DOMContentLoaded', function() {
