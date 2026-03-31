@@ -29,6 +29,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Install dependencies
+        run: npm install sharp
           
       - name: Update gallery in HTML
         run: node .github/scripts/update-gallery.js
@@ -47,4 +50,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update photo gallery [automated]"
-          file_pattern: "index.html"
+          file_pattern: "index.html my-photos/thumbs/**"
