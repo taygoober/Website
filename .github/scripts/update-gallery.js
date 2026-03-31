@@ -1,8 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+let sharp;
+try {
+  sharp = require('sharp');
+} catch (e) {
+  console.log('sharp not installed, please install it to generate thumbnails');
+}
 
 // Configuration
 const PHOTOS_DIR = 'my-photos';
+const THUMBS_DIR = 'my-photos/thumbs';
 const HTML_FILE = 'index.html';
 const MAX_PHOTOS = 3; // Number of photos to include
 
@@ -45,24 +52,47 @@ function getLatestPhotos() {
 }
 
 // Update this part of the function
-function updateHtml(photos) {
+async function updateHtml(photos) {
   try {
+    // Check if thumbs directory exists
+    if (!fs.existsSync(THUMBS_DIR)) {
+      console.log(`Creating ${THUMBS_DIR} directory`);
+      fs.mkdirSync(THUMBS_DIR, { recursive: true });
+    }
+
     // Read the HTML file
     let html = fs.readFileSync(HTML_FILE, 'utf8');
     
     // Create HTML for photo gallery
-    const photosHtml = photos.map(photo => {
+    const photosProps = await Promise.all(photos.map(async photo => {
       const filename = photo.file;
       const prettyName = filename.replace(/\.[^/.]+$/, "").replace(/-/g, " ");
       const displayName = prettyName.charAt(0).toUpperCase() + prettyName.slice(1);
       
-      // Use a low-res base64 placeholder and set the actual image in data-highres
-      const base64Placeholder = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAALCAAGAAoBAREA/8QAFgABAQEAAAAAAAAAAAAAAAAAAAkI/8QAIRAAAAUDBAMAAAAAAAAAAAAAAQIDBAUGBxESEwAIFCEx/9oACAEBAAA/AK/bbdxmp8YWnGej4PI6kufpJVskqZRlnoZ5FaQ0c1fDKEDzyXOAFJRmUGZgWTKAA0Td/9k=";
+      const thumbPath = path.join(THUMBS_DIR, filename).replace(/\\/g, '/');
+      let finalThumbPath = thumbPath; // Default fallback
+
+      if (sharp) {
+        try {
+          // Generate thumbnail
+          await sharp(photo.path)
+            .resize({ width: 800 }) // Resize width to 800px max (retaining aspect ratio)
+            .jpeg({ quality: 70 })  // Compress
+            .toFile(thumbPath);
+            finalThumbPath = thumbPath;
+        } catch (err) {
+          console.error(`Failed to create thumbnail for ${photo.path}:`, err);
+          finalThumbPath = photo.path; // Fallback to original image if sharp fails
+        }
+      } else {
+        finalThumbPath = photo.path;
+      }
       
       return `
     <!-- Photo item -->
     <div class="photo">
-      <img src="${base64Placeholder}" 
+      <img src="${finalThumbPath}" 
+           loading="lazy"
            data-highres="${photo.path}" 
            alt="${displayName}">
       <div class="photo-overlay">
@@ -70,7 +100,8 @@ function updateHtml(photos) {
         <p>${displayName}</p>
       </div>
     </div>`;
-    }).join('\n');
+    }));
+    const photosHtml = photosProps.join('\n');
     
     // Find if there's already a BLUESKY PHOTOS section
     if (html.includes('<!-- BLUESKY PHOTOS START -->')) {
@@ -110,7 +141,9 @@ const latestPhotos = getLatestPhotos();
 console.log(`Found ${latestPhotos.length} photos to add to gallery`);
 
 if (latestPhotos.length > 0) {
-  updateHtml(latestPhotos);
+  updateHtml(latestPhotos).then(() => {
+    console.log('Update complete.');
+  });
 } else {
   console.log('No photos found to add to gallery');
 }
