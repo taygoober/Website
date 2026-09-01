@@ -1174,10 +1174,36 @@
 	document.addEventListener('DOMContentLoaded', function() {
 		const lazyImages = document.querySelectorAll('.photo img');
 
-		// Keep gallery thumbnails low-res.
-		// High-res images are only requested when a user clicks an image to open the modal.
+		// Lazy load gallery preview images when they come into viewport
+		// This ensures previews load on mobile devices like iPhone
+		const imageObserver = new IntersectionObserver((entries, observer) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					const img = entry.target;
+					// Load the high-res image for preview (it will be scaled down by CSS)
+					if (img.dataset.highres) {
+						// Set onload handler before changing src to handle cached images
+						img.onload = () => {
+							img.classList.add('loaded');
+						};
+						// Check if image is already loaded (cached)
+						if (img.complete) {
+							img.classList.add('loaded');
+						}
+						img.src = img.dataset.highres;
+					} else {
+						img.classList.add('loaded');
+					}
+					observer.unobserve(img);
+				}
+			});
+		}, {
+			// Start loading images 200px before they enter the viewport
+			rootMargin: '200px'
+		});
+
 		lazyImages.forEach(img => {
-			img.classList.add('loaded');
+			imageObserver.observe(img);
 		});
 	});
 
